@@ -1,0 +1,18 @@
+{% extends 'layout.html' %}
+
+{% block title %}
+	{% parent %} — {{ title }}
+{% endblock %}
+
+{% block content %}
+<h2>Streams <small>{{ title }}</small></h2>
+<div id="servers-list">
+	{% if error %}
+		<p class="error">{{ error }}</p>
+	{% else %}
+		{% for server in servers %}
+			{% include "./stream.html" %}
+		{% endfor %}
+	{% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,3 @@
+{
+	"db" : "postgres://user:passwd@host:port/dbname"
+}

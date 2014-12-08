@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+		<meta name="description" content="MP3 streams, webradios, Ogg Vorbis streams... If you want to listen to music, free music, this stream directory is the right place for you. Icecast YP is just like Shoutcast.com, featuring radio listings." />
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>{% block title %}Stream directory{% endblock %}</title>
+		<link rel="icon" href="http://www.icecast.org/favicon.ico" type="image/x-icon"/>
+		<link rel="shortcut icon" href="http://www.icecast.org/favicon.ico" type="image/x-icon"/>
+		<link rel="stylesheet" href="/assets/css/bootstrap.min.css" type="text/css" />
+		<!--<link rel="stylesheet" href="/assets/css/bootstrap-theme.min.css" type="text/css" /> -->
+		<script src="/assets/js/jquery-2.1.1.min.js"></script>
+		<script src="/assets/js/bootstrap.min.js"></script>
+	</head>
+	<body>
+		<!-- <div id="xiphbar_outer">
+			<table id="xiphbar" border="0" cellpadding="0" cellspacing="0">
+				<tr>
+					<td>
+						<img id="xiphbanner" src="http://xiph.org/images/logos/xiphbar.png" alt="Xiph logo" width="231" height="17"/>
+					</td>
+					<td id="xiphlinks" align="right">
+						<a href="http://www.xiph.org/">Xiph.org</a>
+						<a href="http://www.vorbis.com/">Vorbis</a>
+						<a href="http://www.theora.org/">Theora</a>
+						<a href="http://www.icecast.org/">Icecast</a>
+						<a href="http://www.speex.org/">Speex</a>
+						<a href="http://flac.sourceforge.net/">FLAC</a>
+						<a href="http://www.xspf.org/">XSPF</a>
+					</td>
+				</tr>
+			</table>
+		</div> -->
+		<nav class="navbar navbar-default navbar-static-top" role="navigation">
+			<div class="container-fluid">
+		    <!-- Brand and toggle get grouped for better mobile display -->
+		    	<div class="navbar-header">
+		      		<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#main-menu">
+		        		<span class="sr-only">Toggle navigation</span>
+		        		<span class="icon-bar"></span>
+		        		<span class="icon-bar"></span>
+		        		<span class="icon-bar"></span>
+		      		</button>
+		      		<a class="navbar-brand" href="/">Stream directory <sub>BETA</sub></a>
+		    	</div>
+		    	<div class="collapse navbar-collapse" id="main-menu">
+		    		<div class="navbar-right">
+				    	<form class="navbar-form" role="search" method="get" action="/search">
+		        			<div class="input-group">
+		          				<input type="text" class="form-control" placeholder="Search" name="search">
+		        				<div class="input-group-btn">
+		        					<button type="submit" class="btn btn-default" aria-label="Go"><i class="glyphicon glyphicon-search"></i></button>
+		        				</div>
+		        			</div>
+		      			</form>
+	      			</div>
+      			</div>
+			</div>
+		</nav>
+		<div class="container-fluid">
+			<div class="row">
+				<div class="col-md-3"> <!-- Sidebar -->
+					<div class="panel panel-default">
+						<div class="panel-heading">
+							<h3 class="panel-title">Statistics</h3>
+						</div>
+						<div class="panel-body">
+							Panel content
+						</div>
+					</div>
+					<div class="panel panel-default">
+						<div class="panel-heading">
+							<h3 class="panel-title">Popular genres</h3>
+						</div>
+						<div class="panel-body">
+							Panel content
+						</div>
+					</div>
+					<div class="panel panel-default">
+						<div class="panel-heading">
+							<h3 class="panel-title">Formats</h3>
+						</div>
+						<div class="panel-body">
+							Panel content
+						</div>
+					</div>
+				</div>
+				<div class="col-md-9"> <!-- Main content -->
+					{% block content %}{% endblock %}
+				</div>
+			</div>
+		</div>
+		<!-- Oldcode -->
+		<!-- <div id="thepage">
+			<div id="navbar">
+				<div id="sidebar-statistics">
+					<h3>Statistics</h3>
+					<ul>
+						<li>Total streams: <strong>27306</strong></li>
+						<li>Ogg Vorbis: <strong>392</strong></li>
+						<li>Opus: <strong>9</strong></li>
+						<li>WebM: <strong>2</strong></li>
+						<li>MP3: <strong>25356</strong></li>
+					</ul>
+				</div>
+				<div id="sidebar-search">
+					<h3>By genre</h3>
+					<div id="search-genre">
+						<ul class="tag-cloud">
+							<li class="popularity-0"><span class="context">233 <a href="http://dir.xiph.org/">radio</a> <a href="http://dir.xiph.org/">streams</a> tagged with </span><a href="/by_genre/Alternative" class="tag" title="Alternative radios">Alternative</a></li>
+							<li class="popularity-3"><span class="context">671 <a href="http://dir.xiph.org/">radio</a> <a href="http://dir.xiph.org/">streams</a> tagged with </span><a href="/by_genre/Anime" class="tag" title="Anime radios">Anime</a></li>
+							<li class="popularity-0"><span class="context">215 <a href="http://dir.xiph.org/">radio</a> <a href="http://dir.xiph.org/">streams</a> tagged with </span><a href="/by_genre/Christian" class="tag" title="Christian radios">Christian</a></li>
+							<li class="popularity-2"><span class="context">434 <a href="http://dir.xiph.org/">radio</a> <a href="http://dir.xiph.org/">streams</a> tagged with </span><a href="/by_genre/Dance" class="tag" title="Dance radios">Dance</a></li>
+							<li class="popularity-1"><span class="context">315 <a href="http://dir.xiph.org/">radio</a> <a href="http://dir.xiph.org/">streams</a> tagged with </span><a href="/by_genre/Hits" class="tag" title="Hits radios">Hits</a></li>
+							<li class="popularity-0"><span class="context">216 <a href="http://dir.xiph.org/">radio</a> <a href="http://dir.xiph.org/">streams</a> tagged with </span><a href="/by_genre/House" class="tag" title="House radios">House</a></li>
+							<li class="popularity-3"><span class="context">626 <a href="http://dir.xiph.org/">radio</a> <a href="http://dir.xiph.org/">streams</a> tagged with </span><a href="/by_genre/Jhiphop" class="tag" title="Jhiphop radios">Jhiphop</a></li>
+							<li class="popularity-3"><span class="context">637 <a href="http://dir.xiph.org/">radio</a> <a href="http://dir.xiph.org/">streams</a> tagged with </span><a href="/by_genre/Jpop" class="tag" title="Jpop radios">Jpop</a></li>
+							<li class="popularity-3"><span class="context">626 <a href="http://dir.xiph.org/">radio</a> <a href="http://dir.xiph.org/">streams</a> tagged with </span><a href="/by_genre/Jrap" class="tag" title="Jrap radios">Jrap</a></li>
+							<li class="popularity-3"><span class="context">633 <a href="http://dir.xiph.org/">radio</a> <a href="http://dir.xiph.org/">streams</a> tagged with </span><a href="/by_genre/Jrock" class="tag" title="Jrock radios">Jrock</a></li>
+							<li class="popularity-0"><span class="context">189 <a href="http://dir.xiph.org/">radio</a> <a href="http://dir.xiph.org/">streams</a> tagged with </span><a href="/by_genre/Music" class="tag" title="Music radios">Music</a></li>
+							<li class="popularity-3"><span class="context">639 <a href="http://dir.xiph.org/">radio</a> <a href="http://dir.xiph.org/">streams</a> tagged with </span><a href="/by_genre/Pop" class="tag" title="Pop radios">Pop</a></li>
+							<li class="popularity-4"><span class="context">757 <a href="http://dir.xiph.org/">radio</a> <a href="http://dir.xiph.org/">streams</a> tagged with </span><a href="/by_genre/Radio" class="tag" title="Radio radios">Radio</a></li>
+							<li class="popularity-4"><span class="context">756 <a href="http://dir.xiph.org/">radio</a> <a href="http://dir.xiph.org/">streams</a> tagged with </span><a href="/by_genre/Rock" class="tag" title="Rock radios">Rock</a></li>
+							<li class="popularity-5"><span class="context">885 <a href="http://dir.xiph.org/">radio</a> <a href="http://dir.xiph.org/">streams</a> tagged with </span><a href="/by_genre/Various" class="tag" title="Various radios">Various</a></li>
+						</ul>
+					</div>
+					<h3>By format</h3>
+					<div id="search-format">
+						<ul>
+							<li><a href="/by_format/Opus">Opus</a></li>
+							<li><a href="/by_format/Ogg_Vorbis">Ogg Vorbis</a></li>
+							<li><a href="/by_format/MP3">MP3</a></li>
+							<li><a href="/by_format/AAC">AAC</a></li>
+							<li><a href="/by_format/AAC+">AAC+</a></li>
+							<li><a href="/by_format/WebM">WebM</a></li>
+							<li><a href="/by_format/Ogg_Theora">Ogg Theora</a></li>
+							<li><a href="/by_format/NSV">NSV</a></li>
+						</ul>
+					</div>
+				</div>
+			</div>
+			<div id="content-footer"></div>
+				<div id="copyright"></div>
+			</div>
+		</div> -->
+		<!-- GAU -->
+		<script type="text/javascript">
+			var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+			document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+		</script>
+		<script type="text/javascript">
+			var pageTracker = _gat._getTracker("XX-XXXXXX-XX");
+			pageTracker._initData();
+			pageTracker._setVar("home");
+			pageTracker._trackPageview(); 
+		</script>
+		<!-- /GAU -->
+	</body>
+</html>

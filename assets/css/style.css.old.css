@@ -1,0 +1,202 @@
+/* Adaptations on the Xiph.org default CSS */
+#content {
+	padding-left: 3em;
+}
+
+#navbar {
+	width: 150px;
+}
+
+#navbar h3 {
+	font-size: 0.9em;
+}
+
+#content {
+	margin-left: 160px;
+}
+
+h2 {
+	font-size: 1.5em;
+}
+
+#thepage {
+	width: 90%;
+}
+
+/* Top logo */
+#xiphlogo {
+	background: transparent url('/assets/images/logo-dirxiphorg.png') no-repeat scroll top left;
+}
+
+#xiphlogo h1 a {
+	display: block;
+	text-indent: -9999px;
+	height: 75px;
+	width: 514px;
+}
+
+/* Search box */
+#sidebar-search label {
+	display: none;
+}
+
+#search {
+	width: 100px;
+}
+
+/* Tag cloud */
+.tag-cloud li {
+	display: inline;
+}
+
+.tag-cloud .context {
+	position: absolute;
+	left: -999px;
+	width: 990px;
+}
+
+.tag-cloud .popularity-0 { font-size: 0.7em !important; }
+.tag-cloud .popularity-1 { font-size: 0.9em !important; }
+.tag-cloud .popularity-2 { font-size: 1.1em !important; }
+.tag-cloud .popularity-3 { font-size: 1.3em !important; }
+.tag-cloud .popularity-4 { font-size: 1.4em !important; }
+.tag-cloud .popularity-5 { font-size: 1.5em !important; }
+.tag-cloud .popularity-2 a, .tag-cloud .popularity-3 a,
+.tag-cloud .popularity-4 a, .tag-cloud .popularity-5 a {
+	font-weight: normal !important;
+}
+
+/* Servers list */
+table.servers-list {
+	list-style-type: none;
+	margin: 0;
+	padding: 0;
+	width: 100%;
+}
+
+table.servers-list tr {
+	border-bottom: 1px dashed #F33;
+	margin-bottom: 0.3em;
+	min-height: 80px;
+}
+
+table.servers-list tr p {
+	margin: 0;
+	padding: 0;
+}
+
+table.servers-list tr td {
+    border-bottom: 1px solid #9FC0D7;
+}
+
+table.servers-list td.rank {
+	font-family: Palatino, Palatino Linotype, Georgia, Times New Roman, serif;
+	font-weight: bold;
+	font-style: italic;
+	color: #999;
+	font-size: 3em;
+	padding-right: 0.3em;
+	text-align: right;
+	vertical-align: top;
+}
+
+table.servers-list td.description {
+}
+
+table.servers-list span.name {
+	font-size: 1.3em;
+	font-weight: bold;
+}
+
+table.servers-list span.listeners {
+	font-variant: small-caps;
+}
+
+table.servers-list p.stream-description {
+	margin: 0.5em 0 0.4em;
+}
+
+table.servers-list p.stream-onair {
+	font-style: italic;
+	font-size: 0.9em;
+}
+
+table.servers-list p.stream-onair strong {
+	font-weight: bold;
+	font-style: normal;
+}
+
+table.servers-list div.stream-tags {
+    font-size: 0.9em;
+}
+
+table.servers-list div.stream-tags ul {
+    display: inline;
+}
+
+table.servers-list td.tune-in {
+	width: 20%;
+	text-align: center;
+	vertical-align: top;
+}
+
+table.servers-list td.tune-in a.tune-in-button {
+	border: 1px solid #C33;
+	background-color: #F33;
+	color: #FFF;
+	font-weight: bold;
+	padding: 0.5em;
+	display: block;
+	text-align: center;
+	margin: 1em 0.5em 0 0.5em;
+}
+
+table.servers-list td.tune-in a.tune-in-button:hover {
+	background-color: #FEE;
+	color: #000;
+}
+
+table.servers-list td.tune-in a.tune-in-button img {
+	margin-bottom: -0.3em;
+}
+
+table.servers-list td.tune-in p.format {
+	font-size: 0.9em;
+}
+
+table.servers-list td.tune-in p.format span.stream {
+        position: absolute;
+        left: -999px;
+        width: 990px;
+}
+
+.no-link {
+	color: #333;
+	text-decoration: none;
+}
+
+/* Tag list */
+.inline-tags {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.inline-tags li {
+    display: inline;
+}
+
+/* Pager */
+.pager {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.pager li {
+    display: inline;
+}
+
+.pager li a.active {
+    font-weight: bold;
+}

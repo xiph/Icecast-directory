@@ -1,0 +1,17 @@
+{
+  "name": "Icecast-YP",
+  "description": "Icecast YP web directory",
+  "version": "0.0.1",
+  "private": true,
+  "dependencies": {
+    "body-parser": "1.5.0",
+    "cache-manager": "0.14.0",
+    "express": "4.6.1",
+    "konphyg": "1.4.0",
+    "morgan": "1.1.1",
+    "pg": "3.4.0",
+    "pg-query": "0.10.1",
+    "qs": "^2.3.3",
+    "swig": "1.4.2"
+  }
+}

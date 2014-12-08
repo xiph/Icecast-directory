@@ -1,0 +1,30 @@
+<div class="container-fluid well well-sm">
+	<div class="row">
+		<div class="col-sm-11">
+			{% if server.url %}
+				<h4><a href="{{ server.url }}">{{ server.server_name }}</a>
+			{% else %}
+				<h4>{{ server.server_name }}
+			{% endif %}
+			{% if !server.listeners %} {% set server.listeners = "0" %} {% endif %}
+			{% if server.listeners == "1" %}
+				<small>{{ server.listeners }}&nbsp;Listener</small></h4>
+			{% else %}
+				<small>{{ server.listeners }}&nbsp;Listeners</small></h4>
+			{% endif %}
+		</div>
+		<div class="col-sm-1 hidden-xs" style="padding-left: 0">
+			<a href="#" class="btn btn-default pull-right"><i class="glyphicon glyphicon-play"></i></a>
+		</div>
+	</div>
+	<p class="description">{{ server.description }}</p>
+	{% if !server.songname %} {% set server.songname = "Unknown" %} {% endif %}
+	<p class="songname"><b>On Air:</b> <i>{{ server.songname }}</i></p>
+	<p class="genres"><b>Genres:</b> 
+		{% for genre in server.genres %}
+			<a href="/by_genre/{{ genre }}" class="label label-default">{{ genre }}</a> 
+		{% endfor %}
+	</p>
+	<p class="tunein"><b>Tune in:</b> <a href="{{ server.listenurl }}.m3u">M3U</a> | <a href="{{ server.listenurl }}.xspf">XSPF</a></p>
+	<p class="format">{{ server.server_type }}</p>
+</div>
