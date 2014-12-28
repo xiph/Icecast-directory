@@ -47,14 +47,25 @@ function ypAdd(req, res) {
 
 function ypTouch(req, res) {
     var final = parseBody(req.body);
-    var touch = "UPDATE servers SET lasttouch = now(), songname = $2, listeners = $3, max_listeners = $4, codec_sub_types = $5 WHERE id = $1;";
-    query(touch, [final.id, final.songname, final.listeners, final.max_listeners, final.codec_sub_types], function(err, row, result) {
-        if (err || result.rowCount === 0) {
-            ypRes(res, false, "Could not find database entry", null, null);
-        } else {
-            ypRes(res, true, "Scucessfully touched", null, null);
-        }
-    });
+    if (final.codec_sub_types) {
+        var touch = "UPDATE servers SET lasttouch = now(), songname = $2, listeners = $3, max_listeners = $4, codec_sub_types = $5 WHERE id = $1;";
+        query(touch, [final.id, final.songname, final.listeners, final.max_listeners, final.codec_sub_types], function(err, row, result) {
+            if (err || result.rowCount === 0) {
+                ypRes(res, false, "Could not find database entry", null, null);
+            } else {
+                ypRes(res, true, "Scucessfully touched", null, null);
+            }
+        });
+    } else {
+        var touch = "UPDATE servers SET lasttouch = now(), songname = $2, listeners = $3, max_listeners = $4 WHERE id = $1;";
+        query(touch, [final.id, final.songname, final.listeners, final.max_listeners], function(err, row, result) {
+            if (err || result.rowCount === 0) {
+                ypRes(res, false, "Could not find database entry", null, null);
+            } else {
+                ypRes(res, true, "Scucessfully touched", null, null);
+            }
+        });
+    }
 }
 
 function ypRemove(req, res) {
@@ -145,6 +156,12 @@ function parseBody(body) {
     }
     if (body.type) {
         final.server_type = body.type;
+        if (!body.stype) {
+            var buff = generateSubType(body.type);
+            if (buff !== null) {
+                final.codec_sub_types = buff.split(' ');
+            }
+        }
     }
     if (body.genre) {
         final.genres = body.genre.split(' ');
@@ -176,6 +193,38 @@ function parseBody(body) {
     /* End of Icecast params */
     console.log(final);
     return final;
+}
+
+function generateSubType(type) {
+    var stype;
+    if (type === 'audio/opus') {
+        stype = 'Opus';
+    }
+    else if (type === 'audio/ogg' || type === 'application/ogg') {
+        stype = 'Vorbis';
+    }
+    else if (type === 'audio/mpeg' || type === 'audio/MPA' || type === 'audio/mpa-robust') {
+        stype = 'MP3';
+    }
+    else if (type === 'audio/aac' || type === 'audio/mp4') {
+        stype = 'AAC';
+    }
+    else if (type === 'audio/aacp') {
+        stype = 'AAC+';
+    }
+    else if (type === 'video/webm') {
+        stype = 'WebM';
+    }
+    else if (type === 'video/ogg') {
+        stype = 'Theora';
+    }
+    else if (type === 'video/nsv') {
+        stype = 'NSV';
+    }
+    else {
+        stype = null;
+    }
+    return stype;
 }
 
 module.exports = init;

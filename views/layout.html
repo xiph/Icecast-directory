@@ -8,11 +8,12 @@
 		<link rel="icon" href="http://www.icecast.org/favicon.ico" type="image/x-icon"/>
 		<link rel="shortcut icon" href="http://www.icecast.org/favicon.ico" type="image/x-icon"/>
 		<link rel="stylesheet" href="/assets/css/bootstrap.min.css" type="text/css" />
-		<!--<link rel="stylesheet" href="/assets/css/bootstrap-theme.min.css" type="text/css" /> -->
+		<link rel="stylesheet" href="/assets/css/style-additions.css" type="text/css" />
 		<script src="/assets/js/jquery-2.1.1.min.js"></script>
 		<script src="/assets/js/bootstrap.min.js"></script>
 	</head>
 	<body>
+		<audio id="player" preload="auto"></audio>
 		<!-- <div id="xiphbar_outer">
 			<table id="xiphbar" border="0" cellpadding="0" cellspacing="0">
 				<tr>
@@ -90,6 +91,20 @@
 				</div>
 			</div>
 		</div>
+		<nav id="playbar" class="navbar navbar-default navbar-fixed-bottom hidden-xs">
+			<div class="container-fluid">
+				<div class="row">
+					<div class="col-sm-11">
+						<p class="navbar-text" id="nowplaying"><strong>No playback</strong></p>
+					</div>
+					<div class="col-sm-1">
+						<button class="btn btn-default pull-right stopbutton">
+							<i class="glyphicon glyphicon-stop"></i>
+						</button>
+					</div>
+				</div>
+			</div>
+		</nav>
 		<!-- Oldcode -->
 		<!-- <div id="thepage">
 			<div id="navbar">
@@ -155,5 +170,6 @@
 			pageTracker._trackPageview(); 
 		</script>
 		<!-- /GAU -->
+		<script src="/assets/js/player.js"></script>
 	</body>
 </html>

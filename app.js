@@ -14,6 +14,7 @@ var config          = conf('config');
 /* Controllers */
 var index           = require('./controllers/index.js')(query, cache);
 var genres          = require('./controllers/genres.js')(query, cache);
+var formats         = require('./controllers/formats.js')(query, cache);
 var yp_cgi          = require('./controllers/yp-cgi.js')(query, qs);
 
 query.connectionParameters = config.db;
@@ -33,6 +34,7 @@ app.set('views', __dirname + '/views');
 /* Routes */
 app.get('/', index);
 app.get('/by_genre/:genre', genres);
+app.get('/by_format/:format', formats);
 app.post('/cgi-bin/yp-cgi', yp_cgi);
 
 var server = app.listen(3000, function() {
