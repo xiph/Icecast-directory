@@ -164,7 +164,7 @@ function parseBody(body) {
         }
     }
     if (body.genre) {
-        final.genres = body.genre.split(' ');
+        final.genres = body.genre.split(/[ ,/]/);
     }
     if (body.listenurl) {
         final.listenurl = body.listenurl;
