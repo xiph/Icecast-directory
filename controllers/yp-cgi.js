@@ -53,7 +53,7 @@ function ypTouch(req, res) {
             if (err || result.rowCount === 0) {
                 ypRes(res, false, "Could not find database entry", null, null);
             } else {
-                ypRes(res, true, "Scucessfully touched", null, null);
+                ypRes(res, true, "Successfully touched", null, null);
             }
         });
     } else {
@@ -62,7 +62,7 @@ function ypTouch(req, res) {
             if (err || result.rowCount === 0) {
                 ypRes(res, false, "Could not find database entry", null, null);
             } else {
-                ypRes(res, true, "Scucessfully touched", null, null);
+                ypRes(res, true, "Successfully touched", null, null);
             }
         });
     }
@@ -75,7 +75,7 @@ function ypRemove(req, res) {
         if (err) {
             ypRes(res, false, "Could not find database entry", null, null);
         } else {
-            ypRes(res, true, "Scucessfully removed", null, null);
+            ypRes(res, true, "Successfully removed", null, null);
         }
     });
 }
