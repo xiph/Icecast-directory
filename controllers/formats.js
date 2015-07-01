@@ -1,8 +1,9 @@
-var query, cache;
+var query, cache, streamApi;
 
-function init(q, c) {
+function init(q, c, s) {
     query = q;
     cache = c;
+    streamApi = s;
     return byFormat;
 }
 
@@ -33,9 +34,8 @@ function getCachedFormatStreams(format, cb) {
 }
 
 function getFormatStreams(format, cb) {
-    query("SELECT id, server_name, server_type, genres, bitrate, listenurl, description, url, \
-           codec_sub_types, songname, listeners FROM servers WHERE $1 = ANY (codec_sub_types);", [format],
-    function(err, rows, result) {
+    params = {'format':format}
+    streamApi(params,function(err, rows, result) {
         cb(err, result);
     });
 }

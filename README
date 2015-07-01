@@ -1,0 +1,9 @@
+TODO:
+- Add the rest of the url checks to yp-cgi.js, also might turn the checks into an
+admin interface
+- Add meaningful error codes to the json api, not just returning empty []
+- Add more options to the api if needed (Grouping of streams by Channel, geographical area)
+    https://trac.xiph.org/ticket/1958
+- Create documenation for the json api
+- Finish the html directory site
+- Add caching to the json api ? maybe

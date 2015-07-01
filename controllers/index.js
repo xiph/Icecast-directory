@@ -1,8 +1,9 @@
-var query, cache;
+var query, cache, streamApi;
 
-function init(q, c) {
+function init(q, c, s) {
     query = q;
     cache = c;
+    streamApi = s;
     return index;
 }
 
@@ -17,6 +18,7 @@ function index(req, res) {
             } else {
                 error = false;
             }
+            console.log(result.rows)
             res.render("index", {
                 title: '',
                 servers: result.rows,
@@ -33,9 +35,8 @@ function getCachedRandomStreams(count, cb) {
 }
 
 function getRandomStreams(count, cb) {
-    query('SELECT id, server_name, server_type, genres, bitrate, listenurl, description, url, \
-           codec_sub_types, songname, listeners FROM servers ORDER BY random() LIMIT $1;', [count],
-    function(err, rows, result) {
+    params = {'limit':count,'order':0}
+    streamApi(params,function(err, rows, result) {
         cb(err, result);
     });
 }

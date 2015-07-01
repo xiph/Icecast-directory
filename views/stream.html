@@ -2,9 +2,9 @@
 	<div class="row">
 		<div class="col-sm-11">
 			{% if server.url %}
-				<h4><a href="{{ server.url }}">{{ server.server_name }}</a>
+				<h4><a href="{{ server.url }}">{{ server.stream_name }}</a>
 			{% else %}
-				<h4>{{ server.server_name }}
+				<h4>{{ server.stream_name }}
 			{% endif %}
 			{% if !server.listeners %} {% set server.listeners = "0" %} {% endif %}
 			{% if server.listeners == "1" %}
@@ -13,16 +13,25 @@
 				<small>{{ server.listeners }}&nbsp;Listeners</small></h4>
 			{% endif %}
 		</div>
-		<div class="col-sm-1 hidden-xs streamentry" style="padding-left: 0" data-contenttype="{{ server.server_type }}" data-listenurl="{{ server.listenurl }}" data-streamname="{{ server.server_name }}"></div>
+		{% for listenurl in server.listenurls %}
+			{% if loop.first %}
+			<div class="col-sm-1 hidden-xs streamentry" style="padding-left: 0" data-contenttype="{{ server.stream_type }}" data-listenurl="{{ listenurl }}" data-streamname="{{ server.stream_name }}"></div>
+			{% endif %}
+		{% endfor %}
 	</div>
 	<p class="description">{{ server.description }}</p>
 	{% if !server.songname %} {% set server.songname = "Unknown" %} {% endif %}
 	<p class="songname"><b>On Air:</b> <i>{{ server.songname }}</i></p>
-	<p class="genres"><b>Genres:</b> 
+	<p class="genres"><b>Genres:</b>
 		{% for genre in server.genres %}
-			<a href="/by_genre/{{ genre }}" class="label label-default">{{ genre }}</a> 
+			<a href="/by_genre/{{ genre }}" class="label label-default">{{ genre }}</a>
 		{% endfor %}
 	</p>
-	<p class="tunein"><b>Tune in:</b> <a href="{{ server.listenurl }}.m3u">M3U</a> | <a href="{{ server.listenurl }}.xspf">XSPF</a></p>
-	<p class="format">{{ server.server_type }}</p>
+	<p class="tunein"><b>Tune in:</b> <a href="/listen/{{ server.id }}/listen.m3u">M3U</a> | <a href="/listen/{{ server.id }}/listen.xspf">XSPF</a></p>
+	{% for format in server.codec_sub_types %}
+		{% if loop.first %}
+		<p class="codec"><a href="/by_format/{{ format }}">{{ format }}</a>
+		{% endif %}
+	{% endfor %}
+	<!--p class="format">{{ server.stream_type }}</p-->
 </div>

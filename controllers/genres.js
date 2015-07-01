@@ -1,8 +1,9 @@
-var query, cache;
+var query, cache, streamApi;
 
-function init(q, c) {
+function init(q, c, s) {
     query = q;
     cache = c;
+    streamApi = s;
     return byGenre;
 }
 
@@ -33,9 +34,8 @@ function getCachedGenreStreams(genre, cb) {
 }
 
 function getGenreStreams(genre, cb) {
-    query("SELECT id, server_name, server_type, genres, bitrate, listenurl, description, url, \
-           codec_sub_types, songname, listeners FROM servers WHERE $1 = ANY (genres);", [genre],
-    function(err, rows, result) {
+    params = {'genre':genre}
+    streamApi(params,function(err, rows, result) {
         cb(err, result);
     });
 }
