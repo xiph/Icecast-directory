@@ -13,6 +13,7 @@
     "pg-query": "0.10.1",
     "qs": "^2.3.3",
     "swig": "1.4.2",
-    "validator":"*"
+    "validator":"*",
+    "xmlbuilder":"*"
   }
 }

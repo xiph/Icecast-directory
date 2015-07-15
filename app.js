@@ -6,7 +6,9 @@ var express         = require('express'),
     bodyParser      = require('body-parser'),
     qs              = require('qs'),
     conf            = require('konphyg')(__dirname + '/config'),
-    validator       = require('validator');
+    validator       = require('validator'),
+    xmlbuilder      = require('xmlbuilder');
+
 
 var cache           = cache_manager.caching({store: "memory", max: 100, ttl: 10});
 var app             = express();
@@ -19,7 +21,7 @@ var index           = require('./controllers/index.js')(query, cache, streamApi)
 var genres          = require('./controllers/genres.js')(query, cache, streamApi);
 var formats         = require('./controllers/formats.js')(query, cache, streamApi);
 var yp_cgi          = require('./controllers/yp-cgi.js')(query, qs, validator, config);
-var listen          = require('./controllers/listen.js')(query, qs, streamApi);
+var listen          = require('./controllers/listen.js')(query, qs, xmlbuilder, streamApi);
 
 
 

@@ -1,9 +1,10 @@
-var query, cache, streamApi;
+var query, cache, xmlbuilder, streamApi;
 
-function init(q, c, s) {
+function init(q, c, x, s) {
     query = q;
     cache = c;
     streamApi = s;
+    xmlbuilder = x;
     return getListen;
 }
 
@@ -44,16 +45,17 @@ function getListen(req, res) {
             }
             res.send(outputString);
         } else if(extension == 'xspf') {
-            outputString = '<?xml version="1.0" encoding="UTF-8"?>\
-	        \r\n<playlist version="1" xmlns="http://xspf.org/ns/0/">\
-	        \r\n    <title>'+rows[0].stream_name+'</title>\
-	        \r\n    <info>'+rows[0].url+'</info>\
-	        \r\n    <trackList>';
+            var xml = xmlbuilder.create('playlist', {'version': '1.0', 'encoding': 'UTF-8'});
+            xml.attribute({'version':'1','xmlns':'http://xspf.org/ns/0/'});
+            xml.ele("title", rows[0].stream_name);
+            xml.ele("info", rows[0].url);
+            var trackList = xml.ele("trackList");
             for (var d = 0; d < listenurls.length; d++)
             {
-                outputString +='\r\n        <track><location>'+listenurls[d]+'</location></track>';
+                trackList.ele("track").ele("location", listenurls[d]);
             }
-            outputString +='\r\n    </trackList>\r\n</playlist>';
+            var xmlString = xml.end({ 'pretty': true, 'indent': '  ' });
+            //console.log(xmlString);
             res.set('Content-Type','application/xspf+xml');
             res.set('Content-Disposition','filename="listen.xspf"');
             if(userAgent.indexOf('/MSIE 5.5/') != -1) {
@@ -62,7 +64,7 @@ function getListen(req, res) {
             else {
                 res.set('Content-Disposition','filename="listen.xspf"');
             }
-            res.send(outputString);
+            res.send(xmlString);
         }
     });
 }

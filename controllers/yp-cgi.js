@@ -1,5 +1,6 @@
 var query, qs, validator, config;
 var async = require('async');
+var foreign_key_violation = '23503';
 
 function init(q, q_, v, c) {
     query = q;
@@ -180,7 +181,7 @@ function ypRemove(req, res) {
     ],
     function(err, result) {
         if(err) {
-            if(err.code == '23503') {
+            if(err.code == foreign_key_violation) {
                 // couldn't delete stream because other servers still referncing
                 ypRes(res, true, "Successfully removed", null, null);
             } else {
