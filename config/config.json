@@ -1,3 +1,18 @@
 {
-	"db" : "postgres://marcof@localhost/marcof"
+	"db" : "postgres://marcof@localhost/marcof",
+	"bans": {
+		"illegalListen":{
+			"reason": "Not enough arguments",
+			"listenUrls": ["dev.local","testvm.hivane.net","backup.abidingradio.com"]
+		},
+		"abuse":{
+			"reason": "Your server has been banned for abuse, have a nice day!",
+			"listenIps": ["92.246.30.112"]
+		},
+		"misconfigured":{
+			"reason": "The network range in which your server resides has been suspended due to a high number of wrongly configured servers! Please contact webmaster@xiph.org urgently!",
+			"listenUrls": ["hostingcenter.com"],
+			"listenIps": ["192.240.97.","192.240.102.","50.7.."]
+		}
+	}
 }

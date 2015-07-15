@@ -18,7 +18,7 @@ var streamApi       = require('./controllers/stream-api.js')(query, cache);
 var index           = require('./controllers/index.js')(query, cache, streamApi);
 var genres          = require('./controllers/genres.js')(query, cache, streamApi);
 var formats         = require('./controllers/formats.js')(query, cache, streamApi);
-var yp_cgi          = require('./controllers/yp-cgi.js')(query, qs, validator);
+var yp_cgi          = require('./controllers/yp-cgi.js')(query, qs, validator, config);
 var listen          = require('./controllers/listen.js')(query, qs, streamApi);
 
 

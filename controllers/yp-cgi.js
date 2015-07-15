@@ -1,10 +1,11 @@
-var query, qs, validator;
+var query, qs, validator, config;
 var async = require('async');
 
-function init(q, q_, v) {
+function init(q, q_, v, c) {
     query = q;
     qs = q_;
     validator = v;
+    config = c;
     return dispatcher;
 }
 
@@ -43,14 +44,8 @@ function multiIndexOf(toCheck, check)
 function ypAdd(req, res) {
     var start = new Date().getTime();
     var params = req.body;
-    // check mandatory arguments
-    var mandatoryArgs = ['sn', 'type', 'genre', 'listenurl'];
-    var illegalListenUrls = ['dev.local','testvm.hivane.net',
-                            'backup.abidingradio.com'];
-    var abuseIps = ['92.246.30.112'];
 
-    var misconfiguredUrls = ['hostingcenter.com'];
-    var misconfiguredIps = ['192.240.97.','192.240.102.','50.7..'];
+    var mandatoryArgs = ['sn', 'type', 'genre', 'listenurl'];
 
     //need to add others
     var defaultServerNames = ['Unspecified name','This is my server name',
@@ -65,24 +60,18 @@ function ypAdd(req, res) {
         ypRes(res, false, "Not a real listenurl", -1, null);
         return;
     }
-
-    if( multiIndexOf(params.listenurl, illegalListenUrls) == false) {
-        ypRes(res, false, "Illegal listen_url. Don't test against a production \
-        server, thanks! ", -1, null);
-        return;
-    }
-
-    if( multiIndexOf(params.listenurl, abuseIps) == false) {
-        ypRes(res, false, "Your server has been banned for abuse, have a nice \
-        day!", -1, null);
-        return;
-    }
-    // || multiIndexOf(ip,misconfiguredIps))
-    if( multiIndexOf(params.listenurl, misconfiguredUrls) == false) {
-        ypRes(res, false, "The network range in which your server resides has \
-        been suspended due to a high number of wrongly configured servers! Please\
-         contact webmaster@xiph.org urgently!", -1, null);
-        return;
+    // check ban groups
+    for(var ban in config.bans)
+    {
+        var reason = config.bans[ban].reason;
+        var listenUrls = config.bans[ban].listenUrls;
+        var listenIps = config.bans[ban].listenIps;
+        if (listenUrls != undefined) {
+            if( multiIndexOf(params.listenurl, listenUrls) == false) {
+                ypRes(res, false, reason, -1, null);
+                return;
+            }
+        }
     }
 
     if( multiIndexOf(params.sn, defaultServerNames) == false) {
