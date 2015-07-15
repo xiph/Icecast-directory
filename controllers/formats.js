@@ -34,8 +34,8 @@ function getCachedFormatStreams(format, cb) {
 }
 
 function getFormatStreams(format, cb) {
-    params = {'format':format}
-    streamApi(params,function(err, rows, result) {
+    var params = {'format':format};
+    streamApi(params, function(err, rows, result) {
         cb(err, result);
     });
 }

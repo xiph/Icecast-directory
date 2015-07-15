@@ -34,8 +34,8 @@ function getCachedGenreStreams(genre, cb) {
 }
 
 function getGenreStreams(genre, cb) {
-    params = {'genre':genre}
-    streamApi(params,function(err, rows, result) {
+    var params = {'genre':genre};
+    streamApi(params, function(err, rows, result) {
         cb(err, result);
     });
 }

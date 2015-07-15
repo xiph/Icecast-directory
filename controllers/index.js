@@ -18,7 +18,7 @@ function index(req, res) {
             } else {
                 error = false;
             }
-            console.log(result.rows)
+            console.log(result.rows);
             res.render("index", {
                 title: '',
                 servers: result.rows,
@@ -35,8 +35,8 @@ function getCachedRandomStreams(count, cb) {
 }
 
 function getRandomStreams(count, cb) {
-    params = {'limit':count,'order':0}
-    streamApi(params,function(err, rows, result) {
+    var params = {'limit':count,'order':0};
+    streamApi(params, function(err, rows, result) {
         cb(err, result);
     });
 }

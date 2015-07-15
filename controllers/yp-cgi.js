@@ -22,8 +22,7 @@ function checkPresent(toCheck, check)
 {
     for(var i=0;i<check.length;i++)
     {
-        if(!(check[i] in toCheck))
-        {
+        if(!(check[i] in toCheck)) {
             return false;
         }
     }
@@ -34,8 +33,7 @@ function multiIndexOf(toCheck, check)
 {
   for(var i=0;i<check.length;i++)
   {
-    if(toCheck.indexOf(check[i]) != -1)
-    {
+    if(toCheck.indexOf(check[i]) != -1) {
         return false;
     }
   }
@@ -46,54 +44,48 @@ function ypAdd(req, res) {
     var start = new Date().getTime();
     var params = req.body;
     // check mandatory arguments
-    var mandatoryArgs = ['sn', 'type', 'genre', 'listenurl']
+    var mandatoryArgs = ['sn', 'type', 'genre', 'listenurl'];
     var illegalListenUrls = ['dev.local','testvm.hivane.net',
-                            'backup.abidingradio.com']
-    var abuseIps = ['92.246.30.112']
+                            'backup.abidingradio.com'];
+    var abuseIps = ['92.246.30.112'];
 
-    var misconfiguredUrls = ['hostingcenter.com']
-    var misconfiguredIps = ['192.240.97.','192.240.102.','50.7..']
+    var misconfiguredUrls = ['hostingcenter.com'];
+    var misconfiguredIps = ['192.240.97.','192.240.102.','50.7..'];
 
     //need to add others
     var defaultServerNames = ['Unspecified name','This is my server name',
-                             'Stream Name','My Station name']
+                             'Stream Name','My Station name'];
 
-    if( checkPresent(params, mandatoryArgs) == false)
-    {
+    if( checkPresent(params, mandatoryArgs) == false) {
         ypRes(res, false, "Not enough arguments", -1, null);
         return;
     }
 
-    if( validator.isURL(params.listenurl) == false)
-    {
+    if( validator.isURL(params.listenurl) == false) {
         ypRes(res, false, "Not a real listenurl", -1, null);
         return;
     }
 
-    if( multiIndexOf(params.listenurl, illegalListenUrls) == false)
-    {
+    if( multiIndexOf(params.listenurl, illegalListenUrls) == false) {
         ypRes(res, false, "Illegal listen_url. Don't test against a production \
         server, thanks! ", -1, null);
         return;
     }
 
-    if( multiIndexOf(params.listenurl, abuseIps) == false)
-    {
+    if( multiIndexOf(params.listenurl, abuseIps) == false) {
         ypRes(res, false, "Your server has been banned for abuse, have a nice \
         day!", -1, null);
         return;
     }
-
-    if( multiIndexOf(params.listenurl, misconfiguredUrls) == false)// || multiIndexOf(ip,misconfiguredIps))
-    {
+    // || multiIndexOf(ip,misconfiguredIps))
+    if( multiIndexOf(params.listenurl, misconfiguredUrls) == false) {
         ypRes(res, false, "The network range in which your server resides has \
         been suspended due to a high number of wrongly configured servers! Please\
          contact webmaster@xiph.org urgently!", -1, null);
         return;
     }
 
-    if( multiIndexOf(params.sn, defaultServerNames) == false)
-    {
+    if( multiIndexOf(params.sn, defaultServerNames) == false) {
         ypRes(res, false, "Default stream name detected, please configure your \
         source client, thanks! ", -1, null);
         return;
@@ -104,26 +96,24 @@ function ypAdd(req, res) {
 
     var insertStream = 'INSERT INTO streams (stream_name, stream_type, genres, bitrate, cluster_pass, description, url, codec_sub_types, channels, samplerate, quality) \
                         VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11) \
-                        RETURNING id;'
+                        RETURNING id;';
     var insertServerMount = 'INSERT INTO server_mounts (sid, stream_id, lasttouch, listenurl) \
                     VALUES (uuid_generate_v4(), $1, now(), $2) \
-                    RETURNING sid;'
+                    RETURNING sid;';
     //inserts new stream
     //inserts new server_mount
     async.waterfall([
     function start(cb) {
         // try to insert the Stream
-        query(insertStream,[final.server_name, final.server_type, final.genres,
+        query(insertStream, [final.server_name, final.server_type, final.genres,
         final.bitrate, final.cluster_pass, final.description, final.url,
-        final.codec_sub_types, final.channels, final.samplerate, final.quality],cb)
+        final.codec_sub_types, final.channels, final.samplerate, final.quality], cb);
     },
-    function(row,result, cb)
-    {
+    function(row,result, cb) {
         // try to insert the Server Mount
-        query(insertServerMount,[row[0].id,final.listenurl], cb)
+        query(insertServerMount, [row[0].id,final.listenurl], cb);
     },
-    function(row,result, cb)
-    {
+    function(row,result, cb) {
         ypRes(res, true, "Successfully Added", row[0].sid, 200);
 
         //var end = new Date().getTime();
@@ -132,9 +122,8 @@ function ypAdd(req, res) {
     },
     ],
     function(err, result) {
-        if(err)
-        {
-            console.log(err)
+        if(err) {
+            console.log(err);
             ypRes(res, false, "Server error", -1, null);
         }
     });
@@ -151,34 +140,29 @@ function ypTouch(req, res) {
     async.waterfall([
     function start(cb) {
         // update the server_mount
-        query(touch,[final.id, final.songname, final.listeners, final.max_listeners],cb)
+        query(touch, [final.id, final.songname, final.listeners, final.max_listeners], cb);
     },
-    function(row,result, cb)
-    {
-        if(result.rowCount != 1)
-        {
+    function(row,result, cb) {
+        if(result.rowCount != 1) {
             // end with error
             cb(1);
         }
         //update the stream song
-        params = [final.songname,final.codec_sub_types,row[0].stream_id]
-        if(!final.codec_sub_types)
-        {
+        params = [final.songname,final.codec_sub_types,row[0].stream_id];
+        if(!final.codec_sub_types) {
             updateStream = 'UPDATE streams SET songname = $1 \
             WHERE id = $3;';
-            params = [final.songname,row[0].stream_id]
+            params = [final.songname,row[0].stream_id];
         }
-        query(updateStream,params, cb)
+        query(updateStream, params, cb);
     },
-    function(row,result,cb)
-    {
+    function(row,result,cb) {
         ypRes(res, true, "Successfully touched", null, null);
     }
     ],
     function(err, result) {
-        if(err)
-        {
-            console.log(err)
+        if(err) {
+            console.log(err);
             ypRes(res, false, "Server error", -1, null);
         }
     });
@@ -192,32 +176,25 @@ function ypRemove(req, res) {
     function start(cb) {
         query(remove, [final.id], cb);
     },
-    function(row,result, cb)
-    {
-        if(result.rowCount != 1)
-        {
+    function(row,result, cb) {
+        if(result.rowCount != 1) {
             cb(1);
         }
         var idRow = row[0].stream_id;
-        query(removeStream, [idRow], cb)
+        query(removeStream, [idRow], cb);
     },
-    function(row,result, cb)
-    {
+    function(row,result, cb) {
         // if no error on delete(foreign key constraint then succesfully removed)
         ypRes(res, true, "Successfully removed", null, null);
-        console.log("Successfuly removed")
+        console.log("Successfuly removed");
     },
     ],
     function(err, result) {
-        if(err)
-        {
-            if(err.code == '23503')
-            {
+        if(err) {
+            if(err.code == '23503') {
                 // couldn't delete stream because other servers still referncing
                 ypRes(res, true, "Successfully removed", null, null);
-            }
-            else
-            {
+            } else {
                 ypRes(res, false, "Could not find database entry", null, null);
             }
         }

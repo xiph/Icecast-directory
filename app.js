@@ -19,7 +19,7 @@ var index           = require('./controllers/index.js')(query, cache, streamApi)
 var genres          = require('./controllers/genres.js')(query, cache, streamApi);
 var formats         = require('./controllers/formats.js')(query, cache, streamApi);
 var yp_cgi          = require('./controllers/yp-cgi.js')(query, qs, validator);
-var listen          = require('./controllers/listen.js')(query, qs, streamApi)
+var listen          = require('./controllers/listen.js')(query, qs, streamApi);
 
 
 
@@ -43,52 +43,45 @@ app.get('/', index);
 app.post('/cgi-bin/yp-cgi', yp_cgi);
 app.get('/by_genre/:genre', genres);
 app.get('/by_format/:format', formats);
-app.get('/listen/:streamId/:filename',listen)
+app.get('/listen/:streamId/:filename',listen);
 
 /* JSON API */
-function respond(res, err, rows, result)
-{
-    if(err)
-    {
+function respond(res, err, rows, result) {
+    if(err) {
         res.send([]);
-    }
-    else
-    {
+    } else {
         res.send(rows);
     }
 }
 app.get('/streams/', function(req,res){
-    res.set('Content-Type', 'application/json')
-    streamApi(req.query,function(err, rows,result){
-        respond(res,err,rows,result)
+    res.set('Content-Type', 'application/json');
+    streamApi(req.query, function(err, rows,result){
+        respond(res, err, rows, result);
     });
 });
-app.get('/streams/:streamId',function(req,res){
-    res.set('Content-Type', 'application/json')
-    params = {'id':req.params.streamId}
-    streamApi(params,function(err,rows,result){
-        if(err || result.rowCount != 1)
-        {
+app.get('/streams/:streamId', function(req,res){
+    res.set('Content-Type', 'application/json');
+    params = {'id':req.params.streamId};
+    streamApi(params, function(err,rows,result){
+        if(err || result.rowCount != 1) {
             res.send([]);
-        }
-        else
-        {
+        } else {
             res.send(rows[0]);
         }
     });
-})
+});
 app.get('/genres/', function(req, res) {
-    res.set('Content-Type', 'application/json')
+    res.set('Content-Type', 'application/json');
     var genresq = 'SELECT DISTINCT val FROM (SELECT unnest(genres) as val FROM streams) s;';
     query(genresq, function(err, rows, result) {
-        respond(res,err,rows,result)
+        respond(res, err, rows, result);
     });
 });
 app.get('/formats/', function(req, res) {
-    res.set('Content-Type', 'application/json')
+    res.set('Content-Type', 'application/json');
     var formats = 'SELECT DISTINCT val FROM (SELECT unnest(codec_sub_types) as val FROM streams) s;';
     query(formats, function(err, rows, result) {
-        respond(res,err,rows,result)
+        respond(res, err, rows, result);
     });
 });
 
