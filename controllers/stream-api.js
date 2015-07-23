@@ -8,12 +8,12 @@ function init(q, c) {
 }
 
 
-function getCachedStreams(format, genre, q, order, limit, json, cb) {
-    var cacheString = JSON.stringify({"format":format,"genre":genre,"q":q,"order":order,"limit":limit,"json":json});
+function getCachedStreams(format, genre, q, order, limit, next, prev, json, cb) {
+    var cacheString = JSON.stringify({"format":format, "genre":genre, "q":q, "order":order, "limit":limit, "next":next, "prev":prev, "json":json});
     console.log(cacheString);
     cache.wrap(cacheString, function (_cb) {
         var params = JSON.parse(cacheString);
-        findBy(params.format, params.genre, params.q, params.order, params.limit, params.json, _cb);
+        findBy(params.format, params.genre, params.q, params.order, params.limit, params.next, params.prev, params.json, _cb);
     }, 5, cb);
 }
 
@@ -26,11 +26,11 @@ function getCachedStreams(format, genre, q, order, limit, json, cb) {
 
     Turns parameters into a sql query on streams
 */
-function findBy(format, genre, q, order, limit, json, resultCallback)
+function findBy(format, genre, q, order, limit, next, prev, json, resultCallback)
 {
     console.log(format);
     console.log(genre);
-    var queryStringJsonBeg = 'SELECT array_to_json(array_agg(row_to_json(t))) FROM (';
+    var queryStringJsonBeg = 'SELECT array_to_json(array_agg(row_to_json(t))) AS streams FROM (';
     var queryStringJsonEnd = ' ) t';
     var queryStringBeg = 'SELECT s.id, s.stream_name, s.stream_type, s.description \
     ,s.songname, s.url, s.avg_listening_time, s.codec_sub_types, s.bitrate, s.hits, \
@@ -104,15 +104,45 @@ function findBy(format, genre, q, order, limit, json, resultCallback)
             return;
         }
     }
+    if(next && (order ==1 || order ==2)) {
+        searchString = 'WHERE ';
+        if(countItems > 1) {
+            searchString = 'AND ';
+        }
+        var sign;
+        if( order==1 ){
+            sign = '<';
+        } else {
+            sign = '>';
+        }
+        queryString += searchString + 's.id ' + sign + ' ' + '$' + countItems + ' ';
+        items.push(next);
+        countItems++;
+    }
+    else if(prev && (order ==1 || order ==2)) {
+        searchString = 'WHERE ';
+        if(countItems > 1) {
+            searchString = 'AND ';
+        }
+        var sign;
+        if( order==1 ){
+            sign = '>';
+        } else {
+            sign = '<';
+        }
+        queryString += searchString + 's.id ' + sign + ' ' + '$' + countItems + ' ';
+        items.push(prev);
+        countItems++;
+    }
     // add in the Group BY
     queryString = queryString + queryStringGroup;
     if(order) {
         if(order == 0) {
             queryString += 'ORDER BY random() ';
         } else if(order == 1) {
-            queryString += 'ORDER BY listeners DESC ';
+            queryString += 'ORDER BY s.id desc ';
         } else if(order == 2) {
-            queryString += 'ORDER BY listeners ASC ';
+            queryString += 'ORDER BY s.id asc ';
         }
     }
     if(limit) {
@@ -124,6 +154,8 @@ function findBy(format, genre, q, order, limit, json, resultCallback)
         queryString += queryStringJsonEnd;
     }
     console.log(queryString);
+    console.log(items)
+    console.log(resultCallback)
     query(queryString, items, resultCallback);
 }
 

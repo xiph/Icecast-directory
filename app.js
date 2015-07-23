@@ -59,11 +59,11 @@ function respond(res, err, rows, result) {
 app.get('/streams/', function(req,res){
     res.set('Content-Type', 'application/json');
     var params = req.query;
-    streamsFindBy(params.format, params.genre, params.q, params.order, params.limit, 1, function(err, rows){
-        if(err || rows[0].array_to_json == null) {
+    streamsFindBy(params.format, params.genre, params.q, params.order, params.limit, params.next, params.prev, 1, function(err, rows){
+        if(err || rows[0].streams == null) {
             res.send([]);
         } else {
-            res.send(rows[0].array_to_json);
+            res.send(rows[0].streams);
         }
     });
 });

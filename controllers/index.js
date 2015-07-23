@@ -8,7 +8,7 @@ function init(q, c, s) {
 }
 
 function index(req, res) {
-    streamsFindBy(undefined, undefined, undefined, 0, 20, 0, function(err, rows) {
+    streamsFindBy(undefined, undefined, undefined, 0, 20, undefined, undefined, 0, function(err, rows) {
         if (err) {
             res.send(503);
         } else {
