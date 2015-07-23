@@ -16,12 +16,13 @@ var config          = conf('config');
 
 
 /* Controllers */
-var streamApi       = require('./controllers/stream-api.js')(query, cache);
-var index           = require('./controllers/index.js')(query, cache, streamApi);
-var genres          = require('./controllers/genres.js')(query, cache, streamApi);
-var formats         = require('./controllers/formats.js')(query, cache, streamApi);
+var streamsFindBy   = require('./controllers/stream-api.js')(query, cache);
+var streamFindById  = require('./controllers/stream-by-id.js')(query, cache);
+var index           = require('./controllers/index.js')(query, cache, streamsFindBy);
+var genres          = require('./controllers/genres.js')(query, cache, streamsFindBy);
+var formats         = require('./controllers/formats.js')(query, cache, streamsFindBy);
 var yp_cgi          = require('./controllers/yp-cgi.js')(query, qs, validator, config);
-var listen          = require('./controllers/listen.js')(query, qs, xmlbuilder, streamApi);
+var listen          = require('./controllers/listen.js')(query, qs, xmlbuilder, streamFindById);
 
 
 
@@ -57,18 +58,22 @@ function respond(res, err, rows, result) {
 }
 app.get('/streams/', function(req,res){
     res.set('Content-Type', 'application/json');
-    streamApi(req.query, function(err, rows,result){
-        respond(res, err, rows, result);
+    var params = req.query;
+    streamsFindBy(params.format, params.genre, params.q, params.order, params.limit, 1, function(err, rows){
+        if(err || rows[0].array_to_json == null) {
+            res.send([]);
+        } else {
+            res.send(rows[0].array_to_json);
+        }
     });
 });
 app.get('/streams/:streamId', function(req,res){
     res.set('Content-Type', 'application/json');
-    params = {'id':req.params.streamId};
-    streamApi(params, function(err,rows,result){
-        if(err || result.rowCount != 1) {
-            res.send([]);
+    streamFindById(req.params.streamId, 1, function(err,rows,result){
+        if(err || rows[0].array_to_json == null) {
+            res.send({});
         } else {
-            res.send(rows[0]);
+            res.send(rows[0].array_to_json[0]);
         }
     });
 });

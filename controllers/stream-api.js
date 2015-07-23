@@ -1,71 +1,66 @@
 var query, cache;
 
 function init(q, c) {
+
     query = q;
     cache = c;
-    return streamApi;
+    return getCachedStreams;
 }
 
+
+function getCachedStreams(format, genre, q, order, limit, json, cb) {
+    var cacheString = JSON.stringify({"format":format,"genre":genre,"q":q,"order":order,"limit":limit,"json":json});
+    console.log(cacheString);
+    cache.wrap(cacheString, function (_cb) {
+        var params = JSON.parse(cacheString);
+        findBy(params.format, params.genre, params.q, params.order, params.limit, params.json, _cb);
+    }, 5, cb);
+}
 
 /*
     Takes in paramters {}
     q = Search string
     id, limit, offset, genre, format, order(0 Random, 1 Listeners Desc, 2 Listeners Asc)
     callback is called during the resulting query, should be
-    function(err, rows, result){}
+    function(err, rows){}
 
     Turns parameters into a sql query on streams
 */
-function streamApi(params,callback)
+function findBy(format, genre, q, order, limit, json, resultCallback)
 {
-    var allStreamsBeg = 'SELECT s.id, s.stream_name, s.stream_type, s.description,s.songname, s.url, s.avg_listening_time, s.codec_sub_types, s.bitrate, s.hits, s.cm, s.samplerate, s.channels, s.quality, s.genres, array_agg(sm.listenurl) AS listenurls, COUNT(sm.listeners) AS listeners, COUNT(sm.max_listeners) AS max_listeners FROM streams s INNER JOIN server_mounts AS sm ON s.id = sm.stream_id ';
-    var allStreamsGroup = 'GROUP BY s.id ';
+    console.log(format);
+    console.log(genre);
+    var queryStringJsonBeg = 'SELECT array_to_json(array_agg(row_to_json(t))) FROM (';
+    var queryStringJsonEnd = ' ) t';
+    var queryStringBeg = 'SELECT s.id, s.stream_name, s.stream_type, s.description \
+    ,s.songname, s.url, s.avg_listening_time, s.codec_sub_types, s.bitrate, s.hits, \
+    s.cm, s.samplerate, s.channels, s.quality, s.genres, array_agg(sm.listenurl) AS listenurls, \
+    COUNT(sm.listeners) AS listeners, COUNT(sm.max_listeners) AS max_listeners \
+    FROM streams s \
+    INNER JOIN server_mounts AS sm ON s.id = sm.stream_id ';
+    var queryStringGroup = 'GROUP BY s.id ';
+    var queryString;
     var countItems = 1;
     var items = [];
-    var queryString = allStreamsBeg;
-    var genre, format, streamId, search, order, limit, offset;
-    if(params.genre) {
-        genre = params.genre;
-        if(Array.isArray(genre)) {
-            for(var i =0; i <genre.length;i++)
-            {
-                queryString += genreFormatModifier(countItems, 's.genres');
-                countItems++;
-                items.push(genre[i]);
-            }
-        } else {
-          queryString += genreFormatModifier(countItems, 's.genres');
-          countItems++;
-          items.push(genre);
-        }
+    // if json add the json conversion to the query
+    if(json) {
+        queryString = queryStringJsonBeg+queryStringBeg;
+    } else {
+        queryString = queryStringBeg;
     }
-    if(params.format) {
-        format = params.format;
-        if(Array.isArray(format)) {
-            for(var i =0; i <genre.length;i++)
-            {
-                queryString += genreFormatModifier(countItems, 's.codec_sub_types');
-                countItems++;
-                items.push(format[i]);
-            }
-        } else {
-          queryString += genreFormatModifier(countItems, 's.codec_sub_types');
-          countItems++;
-          items.push(format);
-        }
-    }
-    if(params.id) {
-        streamId = params.id;
-        if(countItems > 1) {
-            queryString += 'AND $'+countItems+' = s.id ';
-        } else {
-            queryString += 'WHERE $'+countItems+' = s.id ';
-        }
+    var search;
+    if(genre) {
+        queryString += genreFormatModifier(countItems, 's.genres');
         countItems++;
-        items.push(streamId);
+        items.push(genre);
     }
-    if(params.q) {
-        search = params.q;
+    if(format) {
+        queryString += genreFormatModifier(countItems, 's.codec_sub_types');
+        countItems++;
+        items.push(format);
+    }
+    if(q) {
+        search = q;
         var add = false;
         var searchWord = '';
         var searchArray ='(';
@@ -105,46 +100,33 @@ function streamApi(params,callback)
             queryString += searchString;
         } else {
             // search query won't return any results
-            callback(0,[],{});
+            resultCallback(0,[],{});
             return;
         }
     }
     // add in the Group BY
-    queryString = queryString + allStreamsGroup;
-    if(params.order) {
-        order = params.order;
+    queryString = queryString + queryStringGroup;
+    if(order) {
         if(order == 0) {
             queryString += 'ORDER BY random() ';
         } else if(order == 1) {
-            queryString += 'ORDER BY listeners DESC';
+            queryString += 'ORDER BY listeners DESC ';
         } else if(order == 2) {
-            queryString += 'ORDER BY listeners ASC';
-        }
-
-    }
-    if(params.limit) {
-        limit = params.limit;
-        if(Array.isArray(limit)) {
-            limit = limit[0];
-        } else {
-          queryString += 'LIMIT $'+countItems+' ';
-          countItems++;
-          items.push(limit);
+            queryString += 'ORDER BY listeners ASC ';
         }
     }
-    if(params.offset) {
-        offset = params.offset;
-        if(Array.isArray(offset)) {
-            offset = offset[0];
-        } else {
-          queryString += 'OFFSET $'+countItems+' ';
-          countItems++;
-          items.push(offset);
-        }
+    if(limit) {
+        queryString += 'LIMIT $'+countItems+' ';
+        countItems++;
+        items.push(limit);
     }
-    //console.log(queryString)
-    query(queryString, items, callback);
+    if(json) {
+        queryString += queryStringJsonEnd;
+    }
+    console.log(queryString);
+    query(queryString, items, resultCallback);
 }
+
 function genreFormatModifier(count, type)
 {
     if(count > 1) {

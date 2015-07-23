@@ -1,20 +1,19 @@
-var query, cache, xmlbuilder, streamApi;
+var query, cache, xmlbuilder, streamFindById;
 
 function init(q, c, x, s) {
     query = q;
     cache = c;
-    streamApi = s;
+    streamFindById = s;
     xmlbuilder = x;
     return getListen;
 }
 
 function getListen(req, res) {
-    params = {'id':req.params.streamId};
     console.log(req.get('User-Agent'));
     var userAgent = req.get('User-Agent');
     filename = req.params.filename;
-    streamApi(params,function(err, rows, result) {
-        if(err || result.rowCount != 1) {
+    streamFindById(req.params.streamId, 0,function(err, rows) {
+        if(err || rows.length != 1) {
             res.status(404);
             res.send('Stream not in the Database');
             return;

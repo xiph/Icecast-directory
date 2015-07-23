@@ -1,43 +1,29 @@
-var query, cache, streamApi;
+var query, cache, streamsFindBy;
 
 function init(q, c, s) {
     query = q;
     cache = c;
-    streamApi = s;
+    streamsFindBy = s;
     return index;
 }
 
 function index(req, res) {
-    getCachedRandomStreams(20, function(err, result) {
+    streamsFindBy(undefined, undefined, undefined, 0, 20, 0, function(err, rows) {
         if (err) {
             res.send(503);
         } else {
             var error;
-            if (result.rowCount === 0) {
+            if (rows.length === 0) {
                 error = "No streams found.";
             } else {
                 error = false;
             }
-            console.log(result.rows);
             res.render("index", {
                 title: '',
-                servers: result.rows,
+                servers: rows,
                 error: error
             });
         }
-    });
-}
-
-function getCachedRandomStreams(count, cb) {
-    cache.wrap(count, function (_cb) {
-        getRandomStreams(count, _cb);
-    }, 5, cb);
-}
-
-function getRandomStreams(count, cb) {
-    var params = {'limit':count,'order':0};
-    streamApi(params, function(err, rows, result) {
-        cb(err, result);
     });
 }
 
