@@ -9,7 +9,6 @@ function init(q, c, x, s) {
 }
 
 function getListen(req, res) {
-    console.log(req.get('User-Agent'));
     var userAgent = req.get('User-Agent');
     filename = req.params.filename;
     streamFindById(req.params.streamId, 0,function(err, rows) {

@@ -13,12 +13,15 @@
 		{% for server in servers %}
 			{% include "./stream.html" %}
 		{% endfor %}
-		{% if prev %}
-		<a href="{{prev}}">Prev</a>
-		{% endif %}
-		{% if next %}
-		<a href="{{next}}">Next</a>
-		{% endif %}
+	{% endif %}
+	{% if home %}
+	<a href="{{home}}">Start</a>
+	{% endif %}
+	{% if prev %}
+	<a href="{{prev}}">Prev</a>
+	{% endif %}
+	{% if next %}
+	<a href="{{next}}">Next</a>  
 	{% endif %}
 </div>
 {% endblock %}

@@ -8,7 +8,15 @@ function init(q, c, s) {
 }
 
 function index(req, res) {
-    streamsFindBy(undefined, undefined, undefined, 0, 20, undefined, undefined, 0, function(err, rows) {
+    var format = undefined;
+    var genre = undefined;
+    var q = undefined;
+    var order = -1; //random
+    var limit = 10;
+    var starting_after = undefined;
+    var ending_before = undefined;
+    var json = 0;
+    streamsFindBy(format, genre, q, order, limit, starting_after, ending_before, json, function(err, rows) {
         if (err) {
             res.send(503);
         } else {

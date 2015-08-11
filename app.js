@@ -8,12 +8,12 @@ var express         = require('express'),
     conf            = require('konphyg')(__dirname + '/config'),
     validator       = require('validator'),
     xmlbuilder      = require('xmlbuilder');
+    querystring     = require('querystring');
 
 
 var cache           = cache_manager.caching({store: "memory", max: 100, ttl: 10});
 var app             = express();
-var config          = conf('config');
-
+var config          = conf.all().config;
 
 /* Controllers */
 var streamsFindBy   = require('./controllers/stream-api.js')(query, cache);
@@ -48,6 +48,20 @@ app.get('/by_genre/:genre', genres);
 app.get('/by_format/:format', formats);
 app.get('/listen/:streamId/:filename',listen);
 
+// allows updated ban lists to be reloaded
+app.get('/reloadconfig/:password',function(req, res) {
+    // so not everyone can reload the config file
+    if(req.params.password == config.bansreloadpassword) {
+        // clear config and reload it
+        conf.clear();
+        config = conf.all().config;
+        res.send("Config reloaded");
+    } else {
+        res.status(401);
+        res.send("Wrong password");
+    }
+});
+
 /* JSON API */
 function respond(res, err, rows, result) {
     if(err) {
@@ -59,11 +73,45 @@ function respond(res, err, rows, result) {
 app.get('/streams/', function(req,res){
     res.set('Content-Type', 'application/json');
     var params = req.query;
-    streamsFindBy(params.format, params.genre, params.q, params.order, params.limit, params.next, params.prev, 1, function(err, rows){
-        if(err || rows[0].streams == null) {
-            res.send([]);
+    var json = 1;
+    streamsFindBy(params.format, params.genre, params.q, params.order, params.limit, params.starting_after, params.ending_before, json, function(err, rows){
+        if(err) {
+            if(err.responsecode) {
+                res.status(err.responsecode);
+            } else {
+                res.status(400);
+            }
+            res.send({"error":err.message});
         } else {
-            res.send(rows[0].streams);
+            var result = rows[0];
+            if(result.streams == null) {
+                result.streams = [];
+            }
+            result.data = {};
+
+            if(params.limit) {
+                var starting_after = params.starting_after;
+                var ending_before = params.ending_before;
+                var limit = params.limit;
+
+                var qstring;
+                if(result.streams.length == limit) {
+                    // delete the previous values
+                    delete params.starting_after;
+                    delete params.ending_before;
+
+                    // add in the new values
+                    var last_id = rows[0].streams[result.streams.length-1].id;
+                    params.starting_after = last_id;
+                    qstring = querystring.stringify(params);
+                    result.data.next_url = req.path+'?'+qstring;
+                    delete params.starting_after;
+                    params.ending_before = prev_id;
+                    qstring = querystring.stringify(params);
+                    result.data.prev_url = req.path+'?'+qstring;
+                }
+            }
+            res.send(result);
         }
     });
 });
@@ -71,6 +119,7 @@ app.get('/streams/:streamId', function(req,res){
     res.set('Content-Type', 'application/json');
     streamFindById(req.params.streamId, 1, function(err,rows,result){
         if(err || rows[0].array_to_json == null) {
+            res.status(404);
             res.send({});
         } else {
             res.send(rows[0].array_to_json[0]);
@@ -84,6 +133,7 @@ app.get('/genres/', function(req, res) {
         respond(res, err, rows, result);
     });
 });
+
 app.get('/formats/', function(req, res) {
     res.set('Content-Type', 'application/json');
     var formats = 'SELECT DISTINCT val FROM (SELECT unnest(codec_sub_types) as val FROM streams) s;';
