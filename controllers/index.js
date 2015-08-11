@@ -16,8 +16,9 @@ function index(req, res) {
     var limit = 10;
     var starting_after = undefined;
     var ending_before = undefined;
+    var last_listener_count = undefined;
     var json = 0;
-    streamsFindBy(format, genre, q, order, limit, starting_after, ending_before, json, function(err, rows) {
+    streamsFindBy(format, genre, q, order, limit, starting_after, ending_before, last_listener_count, json, function(err, rows) {
         if (err) {
             res.send(503);
         } else {

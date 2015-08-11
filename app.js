@@ -85,6 +85,8 @@ app.get('/reloadconfig/:password',function(req, res) {
  * @apiParam {Number} limit Number of results to return.
  * @apiParam {Number} starting_after ID of stream to return results after(Requires order, cannot have ending_before).
  * @apiParam {Number} ending_before ID of stream to return results before(Requires order, cannot have starting_after).
+ * @apiParam {Number} last_listener_count listener count of the id passed in with starting_after or ending_before. Allows
+ * pagination to get close if the id passed in is deleted.
  *
  * @apiSuccess {List} streams List of stream objects(See get individual stream for an example)
  * @apiSuccess {Object} data Contains starting_after and ending_before urls for this data
@@ -106,7 +108,7 @@ app.get('/streams/', function(req,res){
     res.set('Content-Type', 'application/json');
     var params = req.query;
     var json = 1;
-    streamsFindBy(params.format, params.genre, params.q, params.order, params.limit, params.starting_after, params.ending_before, json, function(err, rows){
+    streamsFindBy(params.format, params.genre, params.q, params.order, params.limit, params.starting_after, params.ending_before, params.last_listener_count, json, function(err, rows){
         if(err) {
             if(err.responsecode) {
                 res.status(err.responsecode);
@@ -131,14 +133,20 @@ app.get('/streams/', function(req,res){
                     // delete the previous values
                     delete params.starting_after;
                     delete params.ending_before;
+                    delete params.last_listener_count;
 
                     // add in the new values
                     var last_id = rows[0].streams[result.streams.length-1].id;
+                    var last_count = rows[0].streams[result.streams.length-1].listeners;
                     params.starting_after = last_id;
+                    params.last_listener_count = last_count;
                     qstring = querystring.stringify(params);
                     result.data.next_url = req.path+'?'+qstring;
+                    delete params.starting_after;
                     var prev_id = rows[0].streams[0].id;
+                    var prev_count = rows[0].streams[0].listeners;
                     params.ending_before = prev_id;
+                    params.last_listener_count = prev_count;
                     qstring = querystring.stringify(params);
                     result.data.prev_url = req.path+'?'+qstring;
                 }

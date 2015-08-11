@@ -9,12 +9,12 @@ function init(q, c) {
 
 
 
-function getCachedStreams(format, genre, q, order, limit, starting_after, ending_before, json, cb) {
-    var cacheString = JSON.stringify({"format":format, "genre":genre, "q":q, "order":order, "limit":limit, "starting_after":starting_after, "ending_before":ending_before, "json":json});
+function getCachedStreams(format, genre, q, order, limit, starting_after, ending_before,last_listener_count, json, cb) {
+    var cacheString = JSON.stringify({"format":format, "genre":genre, "q":q, "order":order, "limit":limit, "starting_after":starting_after, "ending_before":ending_before, "last_listener_count":last_listener_count, "json":json});
     console.log(cacheString);
     cache.wrap(cacheString, function (_cb) {
         var params = JSON.parse(cacheString);
-        findBy(params.format, params.genre, params.q, params.order, params.limit, params.starting_after, params.ending_before, params.json, _cb);
+        findBy(params.format, params.genre, params.q, params.order, params.limit, params.starting_after, params.ending_before, params.last_listener_count, params.json, _cb);
     }, 5, cb);
 }
 
@@ -57,7 +57,7 @@ function getCachedStreams(format, genre, q, order, limit, starting_after, ending
      ) t
 */
 
-function findBy(format, genre, q, order, limit, starting_after, ending_before, json, resultCallback)
+function findBy(format, genre, q, order, limit, starting_after, ending_before, last_listener_count, json, resultCallback)
 {
     // error handling for arguments
 
@@ -102,6 +102,13 @@ function findBy(format, genre, q, order, limit, starting_after, ending_before, j
         }
         if( (order != -1 && order != 0 && order != 1)) {
             resultCallback({"message":"order parameter must be -1, 0, or 1","responsecode":400},[]);
+            return;
+        }
+    }
+    if (last_listener_count instanceof String || typeof last_listener_count == "string") {
+        last_listener_count = parseInt(last_listener_count);
+        if(isNaN(last_listener_count)) {
+            resultCallback({"message":"last_listener_count must be numeric","responsecode":400},[]);
             return;
         }
     }
@@ -204,12 +211,26 @@ function findBy(format, genre, q, order, limit, starting_after, ending_before, j
     // add in the Group BY
     queryString = queryString + queryStringGroup;
 
-    //subQuery to get # listeners for the starting_after/ending_before id
-    var subQuery = '(SELECT sum(sm.listeners) AS listeners FROM streams s ' +
-                        'INNER JOIN server_mounts AS sm ON s.id = sm.stream_id ' +
-                        'WHERE s.id =  $'+ countItems +
-                        'GROUP BY s.id ' +
-                        'LIMIT 1)';
+    var subQuery;
+    if(ending_before || starting_after) {
+        if(last_listener_count != undefined) {
+            var idNum = countItems+1;
+            subQuery = 'COALESCE((SELECT sum(sm.listeners) AS listeners FROM streams s ' +
+                                'INNER JOIN server_mounts AS sm ON s.id = sm.stream_id ' +
+                                'WHERE s.id =  $'+ idNum +
+                                'GROUP BY s.id ' +
+                                'LIMIT 1), $'+ countItems +' )';
+            items.push(last_listener_count);
+            countItems++;
+        } else {
+            //subQuery to get # listeners for the starting_after/ending_before id
+            subQuery = '(SELECT sum(sm.listeners) AS listeners FROM streams s ' +
+                                'INNER JOIN server_mounts AS sm ON s.id = sm.stream_id ' +
+                                'WHERE s.id =  $'+ countItems +
+                                'GROUP BY s.id ' +
+                                'LIMIT 1)';
+        }
+    }
 
     // pagination need to use HAVING because sum(sm.listeners) will return the
     // correct value
@@ -255,7 +276,6 @@ function findBy(format, genre, q, order, limit, starting_after, ending_before, j
     if(json) {
         queryString += queryStringJsonEnd;
     }
-
     query(queryString, items,function(err, rows){
         var result;
         if(rows == null) {
@@ -286,7 +306,6 @@ function findBy(format, genre, q, order, limit, starting_after, ending_before, j
             resultCallback(err, result);
             return;
         }
-
         resultCallback(err, rows);
     });
 }
