@@ -14,6 +14,19 @@
     "qs": "^2.3.3",
     "swig": "1.4.2",
     "validator":"*",
-    "xmlbuilder":"*"
+    "xmlbuilder":"*",
+    "apidoc":"*"
+  },
+  "apidoc": {
+    "name": "Icecast Stream Directory API",
+    "version": "0.0.0",
+    "description": "Stream directory api",
+    "title": "Icecast Stream Directory API",
+    "url" : "",
+    "order": [
+        "Streams",
+        "Genres",
+        "Formats"
+    ]
   }
 }

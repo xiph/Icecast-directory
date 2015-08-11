@@ -25,7 +25,10 @@ var yp_cgi          = require('./controllers/yp-cgi.js')(query, qs, validator, c
 var listen          = require('./controllers/listen.js')(query, qs, xmlbuilder, streamFindById);
 
 
-
+/*
+  To rerun api docs after modifying the apidoc comments use the command
+  apidoc -i . -o apidoc/ -e node_modules
+*/
 
 query.connectionParameters = config.db;
 
@@ -63,13 +66,36 @@ app.get('/reloadconfig/:password',function(req, res) {
 });
 
 /* JSON API */
-function respond(res, err, rows, result) {
-    if(err) {
-        res.send([]);
-    } else {
-        res.send(rows);
-    }
-}
+
+/**
+ * @api {get} /streams/ Get a list of Streams
+ * @apiName GetStreams
+ * @apiGroup Streams
+ *
+ * @apiParam {String} format Format to search by.
+ * @apiParam {String} genre Genre to seach by.
+ * @apiParam {String} q Search string.
+ * @apiParam {Number=-1,0,1} order -1=Random order 0=Descending 1=Ascending.
+ * @apiParam {Number} limit Number of results to return.
+ * @apiParam {Number} starting_after ID of stream to return results after(Requires order, cannot have ending_before).
+ * @apiParam {Number} ending_before ID of stream to return results before(Requires order, cannot have starting_after).
+ *
+ * @apiSuccess {List} streams List of stream objects(See get individual stream for an example)
+ * @apiSuccess {Object} data Contains starting_after and ending_before urls for this data
+ * @apiSuccessExample {json} Success-Response:
+ *     HTTP/1.1 200 OK
+ *     {
+ *       "streams":[],
+ *       "data":{"starting_after":"/streams?limit=2&starting_after=20"},
+ *     }
+ *     View getting a single stream to see what the stream data will look like
+ * @apiError {String} error Contains an error message describing the issue
+ * @apiErrorExample {json} Error-Response:
+ *     HTTP/1.1 400 Bad Request
+ *     {
+ *       "error":"error message describing issue"
+ *     }
+ */
 app.get('/streams/', function(req,res){
     res.set('Content-Type', 'application/json');
     var params = req.query;
@@ -84,7 +110,7 @@ app.get('/streams/', function(req,res){
             res.send({"error":err.message});
         } else {
             var result = rows[0];
-            if(result.streams == null) {
+            if(result.streams === null) {
                 result.streams = [];
             }
             result.data = {};
@@ -105,7 +131,7 @@ app.get('/streams/', function(req,res){
                     params.starting_after = last_id;
                     qstring = querystring.stringify(params);
                     result.data.next_url = req.path+'?'+qstring;
-                    delete params.starting_after;
+                    var prev_id = rows[0].streams[0].id;
                     params.ending_before = prev_id;
                     qstring = querystring.stringify(params);
                     result.data.prev_url = req.path+'?'+qstring;
@@ -115,10 +141,46 @@ app.get('/streams/', function(req,res){
         }
     });
 });
+
+/**
+ * @api {get} /streams/:id Get Individual Stream
+ * @apiName GetStream
+ * @apiGroup Streams
+ *
+ * @apiParam {Number} id Stream unique ID.
+ *
+ * @apiSuccess {Object} _ Describes the stream
+ * @apiSuccessExample {json} Success-Response:
+ *     HTTP/1.1 200 OK
+ *     {
+ *       "id":8,
+ *       "stream_name":"TestStream7",
+ *       "stream_type":"audio/ogg",
+ *       "description":"Really Cool Stream",
+ *       "songname":"TestSong",
+ *       "url":"http://fake.com",
+ *       "avg_listening_time":null,
+ *       "codec_sub_types":["Vorbis"],
+ *       "bitrate":128,
+ *       "hits":null,
+ *       "cm":null,
+ *       "samplerate":44100,
+ *       "channels":2,
+ *       "quality":null,
+ *       "genres":["Rock"],
+ *       "listenurls":["http://fake.com:8000/stream"],
+ *       "listeners":3,
+ *       "max_listeners":100
+ *     }
+ * @apiErrorExample {json} Error-Response:
+ *     HTTP/1.1 404 Not Found
+ *     {
+ *     }
+ */
 app.get('/streams/:streamId', function(req,res){
     res.set('Content-Type', 'application/json');
     streamFindById(req.params.streamId, 1, function(err,rows,result){
-        if(err || rows[0].array_to_json == null) {
+        if(err || rows[0].array_to_json === null) {
             res.status(404);
             res.send({});
         } else {
@@ -126,6 +188,21 @@ app.get('/streams/:streamId', function(req,res){
         }
     });
 });
+
+
+/**
+ * @api {get} /genres/ Get a list of Genres
+ * @apiName GetGenres
+ * @apiGroup Genres
+ *
+ * @apiSuccess {List} - List of genres
+ * @apiSuccessExample {json} Success-Response:
+ *     HTTP/1.1 200 OK
+ *     [
+ *       {"val":"Rock"},
+ *       {"val":"Pop"}
+ *     ]
+ */
 app.get('/genres/', function(req, res) {
     res.set('Content-Type', 'application/json');
     var genresq = 'SELECT DISTINCT val FROM (SELECT unnest(genres) as val FROM streams) s;';
@@ -134,6 +211,20 @@ app.get('/genres/', function(req, res) {
     });
 });
 
+
+/**
+ * @api {get} /formats/ Get a list of Formats
+ * @apiName GetFormats
+ * @apiGroup Formats
+ *
+ * @apiSuccess {List} - List of formats
+ * @apiSuccessExample {json} Success-Response:
+ *     HTTP/1.1 200 OK
+ *     [
+ *       {"val":"Vorbis"},
+ *       {"val":"MP3"}
+ *     ]
+ */
 app.get('/formats/', function(req, res) {
     res.set('Content-Type', 'application/json');
     var formats = 'SELECT DISTINCT val FROM (SELECT unnest(codec_sub_types) as val FROM streams) s;';
@@ -141,6 +232,14 @@ app.get('/formats/', function(req, res) {
         respond(res, err, rows, result);
     });
 });
+
+function respond(res, err, rows, result) {
+    if(err) {
+        res.send([]);
+    } else {
+        res.send(rows);
+    }
+}
 
 
 var server = app.listen(3000, function() {

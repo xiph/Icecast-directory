@@ -11,6 +11,7 @@ function init(q, c) {
 
 function getCachedStreams(format, genre, q, order, limit, starting_after, ending_before, json, cb) {
     var cacheString = JSON.stringify({"format":format, "genre":genre, "q":q, "order":order, "limit":limit, "starting_after":starting_after, "ending_before":ending_before, "json":json});
+    console.log(cacheString);
     cache.wrap(cacheString, function (_cb) {
         var params = JSON.parse(cacheString);
         findBy(params.format, params.genre, params.q, params.order, params.limit, params.starting_after, params.ending_before, params.json, _cb);
@@ -20,7 +21,7 @@ function getCachedStreams(format, genre, q, order, limit, starting_after, ending
 /*
     Takes in paramters {}
     q = Search string
-    limit, genre, format, order(0 Random, 1 Listeners Desc, 2 Listeners Asc)
+    limit, genre, format, order(-1 Random, 0 Listeners Desc, 1 Listeners Asc)
     starting_after, ending_before id for pagination
     callback is called during the resulting query, should be
     function(err, rows){}
@@ -55,6 +56,7 @@ function getCachedStreams(format, genre, q, order, limit, starting_after, ending
     LIMIT $6
      ) t
 */
+
 function findBy(format, genre, q, order, limit, starting_after, ending_before, json, resultCallback)
 {
     // error handling for arguments
@@ -67,7 +69,7 @@ function findBy(format, genre, q, order, limit, starting_after, ending_before, j
     }
 
     // need an order when doing pagination
-    if((starting_after || ending_before) && !(order==0 || order==1)) {
+    if((starting_after || ending_before) && order == undefined) {
         resultCallback({"message":"need an order parameter if using starting_after and ending_before parameters","responsecode":400},[]);
         return;
     }
@@ -84,7 +86,7 @@ function findBy(format, genre, q, order, limit, starting_after, ending_before, j
     }
 
     // parse json if string
-    if (json instanceof String) {
+    if (json instanceof String || typeof json == "string") {
         json = parseInt(json);
     }
     // json can only be 0 or 1
@@ -95,11 +97,11 @@ function findBy(format, genre, q, order, limit, starting_after, ending_before, j
 
     // check order is only -1, 0, or 1
     if(order != undefined) {
-        if (order instanceof String) {
+        if (order instanceof String || typeof order == "string") {
             order = parseInt(order);
         }
         if( (order != -1 && order != 0 && order != 1)) {
-            resultCallback({"message":"order parameter must be -1, 1, or 2","responsecode":400},[]);
+            resultCallback({"message":"order parameter must be -1, 0, or 1","responsecode":400},[]);
             return;
         }
     }
@@ -255,33 +257,37 @@ function findBy(format, genre, q, order, limit, starting_after, ending_before, j
     }
 
     query(queryString, items,function(err, rows){
-        console.log(rows);
         var result;
-        // pagination needed
-        if(json) {
-            console.log(rows);
-            result = rows[0].streams;
-        } else {
-            result = rows;
+        if(rows == null) {
+            resultCallback(err, [{"streams":rows}]);
+            return;
         }
-        if(limit) {
+
+        //pagination reverse needed
+        if(order && ending_before) {
+            if(json) {
+                result = rows[0].streams;
+            } else {
+                result = rows;
+            }
 
             if(result == null) {
                 result = [];
             }
-            // reverse the results back to the correct order
-            if(ending_before) {
-                if(result.length > 0) {
-                    result = result.slice().reverse();
-                }
+
+            if(result.length > 0) {
+                result = result.slice().reverse();
             }
-        }
-        if(json) {
-            result = [{"streams":result}];
+
+            if(json) {
+                result = [{"streams":result}];
+            }
+
+            resultCallback(err, result);
+            return;
         }
 
-        console.log(result);
-        resultCallback(err, result);
+        resultCallback(err, rows);
     });
 }
 
