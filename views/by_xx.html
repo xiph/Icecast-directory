@@ -5,7 +5,7 @@
 {% endblock %}
 
 {% block content %}
-<h2>Streams <small>{{ title }}</small></h2>
+<h2>Streams <small>{% if genre %}  Genre:{{genre}}{% endif %}{% if format %}  Format:{{format}}{% endif %}{% if q %}  Search:{{q}}{% endif %}</small></h2>
 <div id="servers-list">
 	{% if error %}
 		<p class="error">{{ error }}</p>
@@ -21,7 +21,7 @@
 	<a href="{{prev}}">Prev</a>
 	{% endif %}
 	{% if next %}
-	<a href="{{next}}">Next</a>  
+	<a href="{{next}}">Next</a>
 	{% endif %}
 </div>
 {% endblock %}

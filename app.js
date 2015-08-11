@@ -16,14 +16,13 @@ var app             = express();
 var config          = conf.all().config;
 
 /* Controllers */
+var stats           = require('./controllers/stats.js')(query, cache);
 var streamsFindBy   = require('./controllers/stream-api.js')(query, cache);
 var streamFindById  = require('./controllers/stream-by-id.js')(query, cache);
-var index           = require('./controllers/index.js')(query, cache, streamsFindBy);
-var genres          = require('./controllers/genres.js')(query, cache, streamsFindBy);
-var formats         = require('./controllers/formats.js')(query, cache, streamsFindBy);
+var index           = require('./controllers/index.js')(query, cache, streamsFindBy, stats);
 var yp_cgi          = require('./controllers/yp-cgi.js')(query, qs, validator, config);
 var listen          = require('./controllers/listen.js')(query, qs, xmlbuilder, streamFindById);
-
+var search          = require('./controllers/search.js')(query, cache, streamsFindBy, stats);
 
 /*
   To rerun api docs after modifying the apidoc comments use the command
@@ -47,9 +46,16 @@ app.set('views', __dirname + '/views');
 /* Website Routes */
 app.get('/', index);
 app.post('/cgi-bin/yp-cgi', yp_cgi);
-app.get('/by_genre/:genre', genres);
-app.get('/by_format/:format', formats);
+// backwards compatibility for bookmarks, redirect to /search
+app.get('/by_genre/:genre', function(req, res) {
+    res.redirect('/search?genre='+req.param("genre"));
+});
+app.get('/by_format/:format', function(req, res) {
+    res.redirect('/search?format='+req.param("format"));
+});
+app.get('/search/', search);
 app.get('/listen/:streamId/:filename',listen);
+
 
 // allows updated ban lists to be reloaded
 app.get('/reloadconfig/:password',function(req, res) {

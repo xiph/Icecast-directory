@@ -24,13 +24,13 @@
 	<p class="songname"><b>On Air:</b> <i>{{ server.songname }}</i></p>
 	<p class="genres"><b>Genres:</b>
 		{% for genre in server.genres %}
-			<a href="/by_genre/{{ genre }}" class="label label-default">{{ genre }}</a>
+			<a href="/search/?genre={{ genre }}" class="label label-default">{{ genre }}</a>
 		{% endfor %}
 	</p>
 	<p class="tunein"><b>Tune in:</b> <a href="/listen/{{ server.id }}/listen.m3u">M3U</a> | <a href="/listen/{{ server.id }}/listen.xspf">XSPF</a></p>
 	{% for format in server.codec_sub_types %}
 		{% if loop.first %}
-		<p class="codec"><a href="/by_format/{{ format }}">{{ format }}</a>
+		<p class="codec"><a href="/search/?format={{ format }}">{{ format }}</a>
 		{% endif %}
 	{% endfor %}
 	<!--p class="format">{{ server.stream_type }}</p-->

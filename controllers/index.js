@@ -1,9 +1,10 @@
-var query, cache, streamsFindBy;
+var query, cache, streamsFindBy, stats;
 
-function init(q, c, s) {
+function init(q, c, s, st) {
     query = q;
     cache = c;
     streamsFindBy = s;
+    stats = st;
     return index;
 }
 
@@ -26,11 +27,16 @@ function index(req, res) {
             } else {
                 error = false;
             }
-            res.render("index", {
-                title: '',
-                servers: rows,
-                error: error
+
+            stats(function(errorStats, stats) {
+                res.render("index", {
+                    title: '',
+                    servers: rows,
+                    error: error,
+                    stats: stats
+                });
             });
+
         }
     });
 }

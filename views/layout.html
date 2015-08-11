@@ -48,7 +48,7 @@
 		    		<div class="navbar-right">
 				    	<form class="navbar-form" role="search" method="get" action="/search">
 		        			<div class="input-group">
-		          				<input type="text" class="form-control" placeholder="Search" name="search">
+		          				<input type="text" class="form-control" placeholder="Search" name="q">
 		        				<div class="input-group-btn">
 		        					<button type="submit" class="btn btn-default" aria-label="Go"><i class="glyphicon glyphicon-search"></i></button>
 		        				</div>
@@ -66,7 +66,10 @@
 							<h3 class="panel-title">Statistics</h3>
 						</div>
 						<div class="panel-body">
-							Panel content
+							{% for name, number in stats.statistics %}
+								{{name}} - {{number}}
+								<br>
+							{% endfor %}
 						</div>
 					</div>
 					<div class="panel panel-default">
@@ -74,7 +77,10 @@
 							<h3 class="panel-title">Popular genres</h3>
 						</div>
 						<div class="panel-body">
-							Panel content
+							{% for genre in stats.genres %}
+								<a href='/search/?genre={{genre.val}}'>{{genre.val}}</a>
+								<br>
+							{% endfor %}
 						</div>
 					</div>
 					<div class="panel panel-default">
@@ -82,7 +88,10 @@
 							<h3 class="panel-title">Formats</h3>
 						</div>
 						<div class="panel-body">
-							Panel content
+							{% for format in stats.formats %}
+								<a href='/search/?format={{format.val}}'>{{format.val}}</a>
+								<br>
+							{% endfor %}
 						</div>
 					</div>
 				</div>
@@ -167,7 +176,7 @@
 			var pageTracker = _gat._getTracker("XX-XXXXXX-XX");
 			pageTracker._initData();
 			pageTracker._setVar("home");
-			pageTracker._trackPageview(); 
+			pageTracker._trackPageview();
 		</script>
 		<!-- /GAU -->
 		<script src="/assets/js/player.js"></script>
