@@ -9,20 +9,37 @@ var express         = require('express'),
     validator       = require('validator'),
     xmlbuilder      = require('xmlbuilder');
     querystring     = require('querystring');
+    bunyan          = require('bunyan');
 
 
 var cache           = cache_manager.caching({store: "memory", max: 100, ttl: 10});
 var app             = express();
 var config          = conf.all().config;
 
+// if logging is needed
+var log = bunyan.createLogger({
+  name: 'dev',
+  streams: [
+    {
+      level: 'info',
+      stream: process.stdout            // log INFO and above to stdout
+    },
+    {
+      level: 'error',
+      path: __dirname + '/error.log'  // log ERROR and above to a file
+    }
+  ]
+});
+
+
 /* Controllers */
-var stats           = require('./controllers/stats.js')(query, cache);
-var streamsFindBy   = require('./controllers/stream-api.js')(query, cache);
-var streamFindById  = require('./controllers/stream-by-id.js')(query, cache);
-var index           = require('./controllers/index.js')(query, cache, streamsFindBy, stats);
-var yp_cgi          = require('./controllers/yp-cgi.js')(query, qs, validator, config);
-var listen          = require('./controllers/listen.js')(query, qs, xmlbuilder, streamFindById);
-var search          = require('./controllers/search.js')(query, cache, streamsFindBy, stats);
+var stats           = require('./controllers/stats.js')(query, cache, log);
+var streamsFindBy   = require('./controllers/stream-api.js')(query, cache, log);
+var streamFindById  = require('./controllers/stream-by-id.js')(query, cache, log);
+var index           = require('./controllers/index.js')(query, cache, streamsFindBy, stats, log);
+var yp_cgi          = require('./controllers/yp-cgi.js')(query, qs, validator, config, log);
+var listen          = require('./controllers/listen.js')(query, qs, xmlbuilder, streamFindById, log);
+var search          = require('./controllers/search.js')(query, cache, streamsFindBy, stats, log);
 
 /*
   To rerun api docs after modifying the apidoc comments use the command
@@ -37,7 +54,6 @@ swig.setDefaults({ cache: (process.env.NODE_ENV === 'production') ? true : false
 app.use(morgan((process.env.NODE_ENV === 'production') ? 'short' : 'dev'));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use('/assets', express.static(__dirname + '/assets'));
-
 app.engine('html', swig.renderFile);
 
 app.set('view engine', 'html');
@@ -271,3 +287,5 @@ function deleteOldServers(time, cb) {
     query('DELETE FROM servers WHERE lasttouch < NOW() - INTERVAL \'' + time.toString() + ' minutes\';', cb);
 }
 */
+
+module.exports.getApp = app;

@@ -1,10 +1,11 @@
-var query, cache, streamsFindBy, stats;
+var query, cache, streamsFindBy, stats, log;
 
-function init(q, c, s, st) {
+function init(q, c, s, st, l) {
     query = q;
     cache = c;
     streamsFindBy = s;
     stats = st;
+    log = l;
     return index;
 }
 

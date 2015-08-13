@@ -1,9 +1,10 @@
-var query, cache;
+var query, cache, log;
 
-function init(q, c) {
+function init(q, c, l) {
 
     query = q;
     cache = c;
+    log = l;
     return getCachedStreams;
 }
 
@@ -11,7 +12,6 @@ function init(q, c) {
 
 function getCachedStreams(format, genre, q, order, limit, starting_after, ending_before,last_listener_count, json, cb) {
     var cacheString = JSON.stringify({"format":format, "genre":genre, "q":q, "order":order, "limit":limit, "starting_after":starting_after, "ending_before":ending_before, "last_listener_count":last_listener_count, "json":json});
-    console.log(cacheString);
     cache.wrap(cacheString, function (_cb) {
         var params = JSON.parse(cacheString);
         findBy(params.format, params.genre, params.q, params.order, params.limit, params.starting_after, params.ending_before, params.last_listener_count, params.json, _cb);

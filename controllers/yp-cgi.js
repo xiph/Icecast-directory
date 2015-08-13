@@ -1,12 +1,14 @@
-var query, qs, validator, config;
+var query, qs, validator, config, log;
 var async = require('async');
 var foreign_key_violation = '23503';
+var duplicate_key_violation = '23505';
 
-function init(q, q_, v, c) {
+function init(q, q_, v, c, l) {
     query = q;
     qs = q_;
     validator = v;
     config = c;
+    log = l;
     return dispatcher;
 }
 
@@ -18,6 +20,10 @@ function dispatcher(req, res) {
     } else if (req.body.action == "remove") {
         ypRemove(req, res);
     }
+    else {
+        ypRes(res, false, "Need action argument", -1, null);
+    }
+    return;
 }
 
 function checkPresent(toCheck, check)
@@ -113,8 +119,11 @@ function ypAdd(req, res) {
     ],
     function(err, result) {
         if(err) {
-            console.log(err);
-            ypRes(res, false, "Server error", -1, null);
+            if(err.code == duplicate_key_violation) {
+                ypRes(res, false, 'Entry already in the YP. If this happens constantly your server is misconfigured! Verify that "listenurl" is reachable!', -1, null);
+            } else {
+                ypRes(res, false, "Server error", -1, null);
+            }
         }
     });
 }
@@ -123,26 +132,35 @@ function ypAdd(req, res) {
 function ypTouch(req, res) {
     var final = parseBody(req.body);
     var params;
-    var touch = 'UPDATE server_mounts SET lasttouch = now(), songname = $2, \
-    listeners = $3, max_listeners = $4 WHERE sid = $1 Returning stream_id;';
-    var updateStream = 'UPDATE streams SET songname = $1, codec_sub_types = $2 \
-    WHERE id = $3;';
+    var updateServerMount = 'UPDATE server_mounts SET lasttouch = now(), songname = $2, listeners = $3'+
+                        ', max_listeners = $4 WHERE sid = $1 Returning stream_id;';
+    var updateStream = 'UPDATE streams SET songname = $2, codec_sub_types = $3'+
+                        'WHERE id = $1;';
     async.waterfall([
     function start(cb) {
-        // update the server_mount
-        query(touch, [final.id, final.songname, final.listeners, final.max_listeners], cb);
+        if(final.id == undefined) {
+            ypRes(res, false, "Not enough arguments", -1, null);
+            return;
+        }
+        if(final.listeners === undefined) {
+            final.listeners = 0;
+        }
+        if(final.max_listeners === undefined) {
+            final.max_listeners = 0;
+        }
+        query(updateServerMount, [final.id, final.songname, final.listeners, final.max_listeners], cb);
     },
     function(row,result, cb) {
         if(result.rowCount != 1) {
             // end with error
             cb(1);
+            return;
         }
-        //update the stream song
-        params = [final.songname,final.codec_sub_types,row[0].stream_id];
+        params = [row[0].stream_id, final.songname,final.codec_sub_types];
         if(!final.codec_sub_types) {
-            updateStream = 'UPDATE streams SET songname = $1 \
-            WHERE id = $3;';
-            params = [final.songname,row[0].stream_id];
+            updateStream = 'UPDATE streams SET songname = $2 \
+            WHERE id = $1;';
+            params = [row[0].stream_id, final.songname];
         }
         query(updateStream, params, cb);
     },
@@ -169,6 +187,7 @@ function ypRemove(req, res) {
     function(row,result, cb) {
         if(result.rowCount != 1) {
             cb(1);
+            return;
         }
         var idRow = row[0].stream_id;
         query(removeStream, [idRow], cb);
@@ -176,7 +195,6 @@ function ypRemove(req, res) {
     function(row,result, cb) {
         // if no error on delete(foreign key constraint then succesfully removed)
         ypRes(res, true, "Successfully removed", null, null);
-        console.log("Successfuly removed");
     },
     ],
     function(err, result) {
@@ -308,13 +326,13 @@ function parseBody(body) {
 
 function generateSubType(type) {
     var stype;
-    if (type === 'audio/opus') {
+    if (type === 'audio/opus' || type === 'application/ogg+opus') {
         stype = 'Opus';
     }
-    else if (type === 'audio/ogg' || type === 'application/ogg') {
+    else if (type === 'audio/ogg' || type === 'application/ogg' || type === 'application/ogg+vorbis' || type === 'application/x-ogg') {
         stype = 'Vorbis';
     }
-    else if (type === 'audio/mpeg' || type === 'audio/MPA' || type === 'audio/mpa-robust') {
+    else if (type === 'application/mp3' || type === 'audio/x-mpeg' || type === 'audio/mpeg' || type === 'audio/MPA' || type === 'audio/mpa-robust') {
         stype = 'MP3';
     }
     else if (type === 'audio/aac' || type === 'audio/mp4') {
@@ -323,10 +341,10 @@ function generateSubType(type) {
     else if (type === 'audio/aacp') {
         stype = 'AAC+';
     }
-    else if (type === 'video/webm') {
+    else if (type === 'video/webm' || type === 'audio/webm') {
         stype = 'WebM';
     }
-    else if (type === 'video/ogg') {
+    else if (type === 'video/ogg' || type === 'application/ogg+theora') {
         stype = 'Theora';
     }
     else if (type === 'video/nsv') {

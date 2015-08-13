@@ -1,10 +1,11 @@
-var query, cache, xmlbuilder, streamFindById;
+var query, cache, xmlbuilder, streamFindById, log;
 
-function init(q, c, x, s) {
+function init(q, c, x, s, l) {
     query = q;
     cache = c;
     streamFindById = s;
     xmlbuilder = x;
+    log = l;
     return getListen;
 }
 

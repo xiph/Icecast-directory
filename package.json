@@ -15,7 +15,12 @@
     "swig": "1.4.2",
     "validator":"*",
     "xmlbuilder":"*",
-    "apidoc":"*"
+    "apidoc":"*",
+    "mocha":"*",
+    "should":"*",
+    "supertest":"*",
+    "request":"*",
+    "bunyan":"*"
   },
   "apidoc": {
     "name": "Icecast Stream Directory API",
@@ -28,5 +33,8 @@
         "Genres",
         "Formats"
     ]
+  },
+  "scripts":{
+    "test":"mocha"
   }
 }

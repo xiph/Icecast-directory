@@ -70,6 +70,12 @@
 								{{name}} - {{number}}
 								<br>
 							{% endfor %}
+							{% for format in stats.formats %}
+								{% if loop.index0 < 3 %}
+								{{format.codec}} - {{format.count}}
+								<br>
+								{% endif %}
+							{% endfor %}
 						</div>
 					</div>
 					<div class="panel panel-default">
@@ -78,7 +84,7 @@
 						</div>
 						<div class="panel-body">
 							{% for genre in stats.genres %}
-								<a href='/search/?genre={{genre.val}}'>{{genre.val}}</a>
+								<a href='/search/?genre={{genre.genre}}'>{{genre.genre}}</a>
 								<br>
 							{% endfor %}
 						</div>
@@ -89,7 +95,7 @@
 						</div>
 						<div class="panel-body">
 							{% for format in stats.formats %}
-								<a href='/search/?format={{format.val}}'>{{format.val}}</a>
+								<a href='/search/?format={{format.codec}}'>{{format.codec}}</a>
 								<br>
 							{% endfor %}
 						</div>

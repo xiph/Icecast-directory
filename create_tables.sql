@@ -2,17 +2,6 @@ DROP EXTENSION IF EXISTS "uuid-ossp";
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 DROP TABLE IF EXISTS server_mounts;
 DROP TABLE IF EXISTS streams;
-CREATE TABLE IF NOT EXISTS server_mounts (
-	sid uuid NOT NULL,
-	stream_id INTEGER REFERENCES streams(id),
-	listenurl VARCHAR DEFAULT NULL,
-	listeners INTEGER DEFAULT NULL,
-	max_listeners INTEGER DEFAULT NULL,
-	songname VARCHAR DEFAULT NULL,
-	lasttouch TIMESTAMP NOT NULL,
-	PRIMARY KEY  (sid),
-	UNIQUE(listenurl)
-);
 
 CREATE TABLE IF NOT EXISTS streams (
   	id serial NOT NULL,
@@ -33,4 +22,17 @@ CREATE TABLE IF NOT EXISTS streams (
 	genres VARCHAR[] DEFAULT NULL,
 	PRIMARY KEY  (id),
 	UNIQUE(stream_name, bitrate, codec_sub_types)
+);
+
+
+CREATE TABLE IF NOT EXISTS server_mounts (
+	sid uuid NOT NULL,
+	stream_id INTEGER REFERENCES streams(id),
+	listenurl VARCHAR DEFAULT NULL,
+	listeners INTEGER DEFAULT 0,
+	max_listeners INTEGER DEFAULT 0,
+	songname VARCHAR DEFAULT NULL,
+	lasttouch TIMESTAMP NOT NULL,
+	PRIMARY KEY  (sid),
+	UNIQUE(listenurl)
 );

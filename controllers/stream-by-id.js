@@ -1,9 +1,10 @@
-var query, cache;
+var query, cache, log;
 
-function init(q, c) {
+function init(q, c, l) {
 
     query = q;
     cache = c;
+    log = l;
     return getCachedStreamById;
 }
 
@@ -42,7 +43,6 @@ function findById(id, json, resultCallback)
     if(json) {
         queryString += queryStringJsonEnd;
     }
-    console.log(queryString);
 
     query(queryString, items, resultCallback);
 }
