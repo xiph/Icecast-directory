@@ -1,2 +1,78 @@
 /* Padding for bottom navbar */
 body { padding-bottom: 70px; }
+
+/* Tag Cloud */
+.tag-cloud li {
+	display: inline;
+}
+
+.tag-cloud {
+    padding:0;
+}
+
+
+.tag-cloud .popularity-0 { font-size: 0.9em !important; padding-left:5px; padding-right:5px;}
+.tag-cloud .popularity-1 { font-size: 1.1em !important; padding-left:5px; padding-right:5px;}
+.tag-cloud .popularity-2 { font-size: 1.3em !important; padding-left:5px; padding-right:5px;}
+.tag-cloud .popularity-3 { font-size: 1.4em !important; padding-left:5px; padding-right:5px;}
+.tag-cloud .popularity-4 { font-size: 1.5em !important; padding-left:5px; padding-right:5px;}
+.tag-cloud .popularity-5 { font-size: 1.6em !important; padding-left:5px; padding-right:5px;}
+.tag-cloud .popularity-2 a, .tag-cloud .popularity-3 a,
+.tag-cloud .popularity-4 a, .tag-cloud .popularity-5 a {
+	font-weight: normal !important;
+}
+
+
+/* Search Bar */
+.search-bar{
+    margin-top:5px !important;
+    margin-bottom:5px !important;
+}
+
+
+
+#xiphbar_outer {
+  background-color: #666666;
+  min-width: 840px;
+  width: 100%;
+  height: 30px;
+}
+
+/* make the top xiph bar disappear on small devices */
+@media only screen and (max-device-width: 1026px) {
+    #xiphbar_outer {
+      visibility: hidden;
+      display: none;
+    }
+}
+
+#xiphbar {
+  min-width: 840px;
+  width: 840px;
+  height: 30px;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 0 8px 0 8px;
+}
+
+#xiphbar a {
+  margin-left: 16px;
+  color: #ffcc66;
+  text-decoration: none;
+  text-transform: uppercase;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+#xiphbar a:hover {
+  color: #ffe6b3;
+}
+
+#xiphbanner {
+  float: left;
+  vertical-align: middle;
+}
+
+#xiphlinks {
+  font-size: 11px;
+  vertical-align: middle;
+}

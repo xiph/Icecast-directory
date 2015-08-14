@@ -14,7 +14,7 @@
 	</head>
 	<body>
 		<audio id="player" preload="auto"></audio>
-		<!-- <div id="xiphbar_outer">
+		 <div id="xiphbar_outer">
 			<table id="xiphbar" border="0" cellpadding="0" cellspacing="0">
 				<tr>
 					<td>
@@ -31,7 +31,7 @@
 					</td>
 				</tr>
 			</table>
-		</div> -->
+		</div>
 		<nav class="navbar navbar-default navbar-static-top" role="navigation">
 			<div class="container-fluid">
 		    <!-- Brand and toggle get grouped for better mobile display -->
@@ -48,7 +48,7 @@
 		    		<div class="navbar-right">
 				    	<form class="navbar-form" role="search" method="get" action="/search">
 		        			<div class="input-group">
-		          				<input type="text" class="form-control" placeholder="Search" name="q">
+		          				<input type="text" class="form-control search-bar" placeholder="Search" name="q">
 		        				<div class="input-group-btn">
 		        					<button type="submit" class="btn btn-default" aria-label="Go"><i class="glyphicon glyphicon-search"></i></button>
 		        				</div>
@@ -63,15 +63,15 @@
 				<div class="col-md-3"> <!-- Sidebar -->
 					<div class="panel panel-default">
 						<div class="panel-heading">
-							<h3 class="panel-title">Statistics</h3>
+							<h3 class="panel-title text-center">Statistics</h3>
 						</div>
-						<div class="panel-body">
+						<div class="panel-body text-center">
 							{% for name, number in stats.statistics %}
 								{{name}} - {{number}}
 								<br>
 							{% endfor %}
 							{% for format in stats.formats %}
-								{% if loop.index0 < 3 %}
+								{% if loop.index0 < 5 %}
 								{{format.codec}} - {{format.count}}
 								<br>
 								{% endif %}
@@ -79,23 +79,24 @@
 						</div>
 					</div>
 					<div class="panel panel-default">
-						<div class="panel-heading">
+						<div class="panel-heading text-center">
 							<h3 class="panel-title">Popular genres</h3>
 						</div>
 						<div class="panel-body">
+							<ul class="tag-cloud text-center">
 							{% for genre in stats.genres %}
-								<a href='/search/?genre={{genre.genre}}'>{{genre.genre}}</a>
-								<br>
+								<li class="popularity-{{genre.popularity}}"><a href="/search?={{genre.genre |url_encode}}" class="tag" title="{{genre.genre}} radios">{{genre.genre}}</a></li>
 							{% endfor %}
+							</ul>
 						</div>
 					</div>
 					<div class="panel panel-default">
 						<div class="panel-heading">
-							<h3 class="panel-title">Formats</h3>
+							<h3 class="panel-title text-center">Formats</h3>
 						</div>
-						<div class="panel-body">
+						<div class="panel-body text-center">
 							{% for format in stats.formats %}
-								<a href='/search/?format={{format.codec}}'>{{format.codec}}</a>
+								<a href='/search/?format={{format.codec |url_encode }}'>{{format.codec}}</a>
 								<br>
 							{% endfor %}
 						</div>

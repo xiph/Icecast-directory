@@ -45,6 +45,11 @@ function getStats(resultCallback)
     },
     function(rows, result, cb) {
         stats.statistics["Total Streams"] = rows[0].total
+        // computer popularity for genres
+        for(var i =0;i<stats["genres"].length;i++) {
+            // cap popularity at 6
+            stats["genres"][i].popularity = Math.min(Math.round((stats["genres"][i].count/rows[0].total)*15-1), 6)
+        }
         resultCallback(null, stats);
     },
     ],function (err, result) {
