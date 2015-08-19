@@ -1,11 +1,10 @@
-var query, cache, log;
+var query, cache;
 var async = require('async');
 
-function init(q, c, l) {
+function init(q, c) {
 
     query = q;
     cache = c;
-    log;
     return getCachedStats;
 }
 

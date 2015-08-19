@@ -9,37 +9,24 @@ var express         = require('express'),
     validator       = require('validator'),
     xmlbuilder      = require('xmlbuilder');
     querystring     = require('querystring');
-    bunyan          = require('bunyan');
+//    bunyan          = require('bunyan');
 
 
 var cache           = cache_manager.caching({store: "memory", max: 100, ttl: 10});
 var app             = express();
 var config          = conf.all().config;
 
-// if logging is needed
-var log = bunyan.createLogger({
-  name: 'dev',
-  streams: [
-    {
-      level: 'info',
-      stream: process.stdout            // log INFO and above to stdout
-    },
-    {
-      level: 'error',
-      path: __dirname + '/error.log'  // log ERROR and above to a file
-    }
-  ]
-});
+
 
 
 /* Controllers */
-var stats           = require('./controllers/stats.js')(query, cache, log);
-var streamsFindBy   = require('./controllers/stream-api.js')(query, cache, log);
-var streamFindById  = require('./controllers/stream-by-id.js')(query, cache, log);
-var index           = require('./controllers/index.js')(query, cache, streamsFindBy, stats, log);
-var yp_cgi          = require('./controllers/yp-cgi.js')(query, qs, validator, config, log);
-var listen          = require('./controllers/listen.js')(query, qs, xmlbuilder, streamFindById, log);
-var search          = require('./controllers/search.js')(query, cache, streamsFindBy, stats, log);
+var stats           = require('./controllers/stats.js')(query, cache);
+var streamsFindBy   = require('./controllers/stream-api.js')(query, cache);
+var streamFindById  = require('./controllers/stream-by-id.js')(query, cache);
+var index           = require('./controllers/index.js')(query, cache, streamsFindBy, stats);
+var yp_cgi          = require('./controllers/yp-cgi.js')(query, qs, validator, config);
+var listen          = require('./controllers/listen.js')(query, qs, xmlbuilder, streamFindById);
+var search          = require('./controllers/search.js')(query, cache, streamsFindBy, stats);
 
 /*
   To rerun api docs after modifying the apidoc comments use the command
@@ -105,12 +92,12 @@ app.get('/reloadconfig/:password',function(req, res) {
  * pagination to get close if the id passed in is deleted.
  *
  * @apiSuccess {List} streams List of stream objects(See get individual stream for an example)
- * @apiSuccess {Object} data Contains starting_after and ending_before urls for this data
+ * @apiSuccess {Object} data Contains next_url and prev_url for this data
  * @apiSuccessExample {json} Success-Response:
  *     HTTP/1.1 200 OK
  *     {
  *       "streams":[],
- *       "data":{"starting_after":"/streams?limit=2&starting_after=20"},
+ *       "data":{"next_url":"/streams?limit=2&starting_after=20&order=0&last_listener_count=3","prev_url":"/streams?limit=2&ending_before=23&order=0&last_listener_count=5"},
  *     }
  *     View getting a single stream to see what the stream data will look like
  * @apiError {String} error Contains an error message describing the issue

@@ -1,11 +1,10 @@
-var query, cache, streamsFindBy, stats, log;
+var query, cache, streamsFindBy, stats;
 
-function init(q, c, s, st, l) {
+function init(q, c, s, st) {
     query = q;
     cache = c;
     streamsFindBy = s;
     stats = st;
-    log = l;
     return bySearch;
 }
 
@@ -41,7 +40,7 @@ function bySearch(req, res) {
                 // clear pagination params
                 delete params.ending_before;
                 delete params.starting_after;
-                delete params.last_count;
+                delete params.last_listener_count;
                 qstring = querystring.stringify(params);
                 home_url = req.path+'?'+qstring;
             }
@@ -66,7 +65,6 @@ function bySearch(req, res) {
                 delete params.starting_after;
                 params.ending_before = prev_id;
                 params.last_listener_count = prev_count;
-
                 qstring = querystring.stringify(params);
                 prev_url = req.path+'?'+qstring;
             }

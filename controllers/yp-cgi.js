@@ -1,14 +1,13 @@
-var query, qs, validator, config, log;
+var query, qs, validator, config;
 var async = require('async');
 var foreign_key_violation = '23503';
 var duplicate_key_violation = '23505';
 
-function init(q, q_, v, c, l) {
+function init(q, q_, v, c) {
     query = q;
     qs = q_;
     validator = v;
     config = c;
-    log = l;
     return dispatcher;
 }
 
@@ -39,34 +38,38 @@ function checkPresent(toCheck, check)
 
 function multiIndexOf(toCheck, check)
 {
-  for(var i=0;i<check.length;i++)
-  {
-    if(toCheck.indexOf(check[i]) != -1) {
-        return false;
+    for(var i=0;i<check.length;i++)
+    {
+        if(toCheck.indexOf(check[i]) != -1) {
+            return false;
+        }
     }
-  }
-  return true;
+    return true;
 }
 
 function ypAdd(req, res) {
-    var start = new Date().getTime();
+    //var start = new Date().getTime();
+    var ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
     var params = req.body;
 
     var mandatoryArgs = ['sn', 'type', 'genre', 'listenurl'];
 
-    //need to add others
     var defaultServerNames = ['Unspecified name','This is my server name',
-                             'Stream Name','My Station name'];
+                             'Stream Name','My Station name', '-', 'Auto-DJ',
+                             'AutoDJ','Instreamer','Stream-128','Stream-64',
+                             'Stream-96','Stream-256','stream-128','stream-64',
+                             'stream-96','stream-256'];
 
     if( checkPresent(params, mandatoryArgs) == false) {
-        ypRes(res, false, "Not enough arguments", -1, null);
+        ypRes(res, false, "Not enough arguments.", -1, null);
         return;
     }
 
     if( validator.isURL(params.listenurl) == false) {
-        ypRes(res, false, "Not a real listenurl", -1, null);
+        ypRes(res, false, "Could not parse listen_url.", -1, null);
         return;
     }
+
     // check ban groups
     for(var ban in config.bans)
     {
@@ -75,6 +78,12 @@ function ypAdd(req, res) {
         var listenIps = config.bans[ban].listenIps;
         if (listenUrls != undefined) {
             if( multiIndexOf(params.listenurl, listenUrls) == false) {
+                ypRes(res, false, reason, -1, null);
+                return;
+            }
+        }
+        if (listenIps != undefined) {
+            if( multiIndexOf(params.listenurl, listenIps) == false) {
                 ypRes(res, false, reason, -1, null);
                 return;
             }
@@ -139,7 +148,7 @@ function ypTouch(req, res) {
     async.waterfall([
     function start(cb) {
         if(final.id == undefined) {
-            ypRes(res, false, "Not enough arguments", -1, null);
+            ypRes(res, false, "Not enough arguments.", -1, null);
             return;
         }
         if(final.listeners === undefined) {
@@ -153,7 +162,7 @@ function ypTouch(req, res) {
     function(row,result, cb) {
         if(result.rowCount != 1) {
             // end with error
-            cb(1);
+            cb("update failed");
             return;
         }
         params = [row[0].stream_id, final.songname,final.codec_sub_types];
@@ -170,8 +179,14 @@ function ypTouch(req, res) {
     ],
     function(err, result) {
         if(err) {
-            console.log(err);
-            ypRes(res, false, "Server error", -1, null);
+            if(err == "update failed") {
+                ypRes(res, false, "SID does not exist. Check your firewall and icecast 'hostname' setting, your server may be unreachable.", -1, null);
+            }
+            else {
+                console.log(err);
+                ypRes(res, false, "Server error", -1, null);
+            }
+
         }
     });
 }

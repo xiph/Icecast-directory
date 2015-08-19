@@ -32,12 +32,13 @@ describe('POST /cgi-bin/yp-cgi', function(){
         });
     });
 
+    /* Test Add */
     it('add stream fails on not enough arguments', function(done){
         var params = {action:"add"};
         testPost(params, function(err, res) {
             if (err) return done(err);
             res.headers.ypresponse.should.equal('0');
-            res.headers.ypmessage.should.equal('Not enough arguments');
+            res.headers.ypmessage.should.equal('Not enough arguments.');
             done();
         });
     });
@@ -47,7 +48,7 @@ describe('POST /cgi-bin/yp-cgi', function(){
         testPost(params, function(err, res) {
             if (err) return done(err);
             res.headers.ypresponse.should.equal('0');
-            res.headers.ypmessage.should.equal('Not a real listenurl');
+            res.headers.ypmessage.should.equal('Could not parse listen_url.');
             done();
         });
     });
@@ -63,11 +64,7 @@ describe('POST /cgi-bin/yp-cgi', function(){
             testPost(params, function(err, res) {
                 if (err) return done(err);
                 res.headers.ypresponse.should.equal('0');
-                testPost({"action":"remove","sid":delsid}, function(err, res) {
-                    if (err) return done(err);
-                    res.headers.ypresponse.should.equal('1');
-                    done();
-                });
+                done();
             });
         });
     });
@@ -78,11 +75,36 @@ describe('POST /cgi-bin/yp-cgi', function(){
         testPost(params, function(err, res) {
             if (err) return done(err);
             res.headers.ypresponse.should.equal('1');
-            testPost({"action":"remove","sid":res.headers.sid}, function(err, res) {
-                if (err) return done(err);
-                res.headers.ypresponse.should.equal('1');
-                done()
-            });
+            done();
+        });
+    });
+
+    /* Test Touch */
+    it('test touch fails if not enough arguments', function(done){
+        var params = {"action":"touch"}
+        testPost(params, function(err, res) {
+            if (err) return done(err);
+            res.headers.ypresponse.should.equal('0');
+            res.headers.ypmessage.should.equal('Not enough arguments.');
+            done();
+        });
+    });
+
+    it('test touch fails if sid not in the db', function(done){
+        var params = {"action":"touch","sid":"0be387a8-0fab-4d35-a1b5-8a2222802a94"}
+        testPost(params, function(err, res) {
+            if (err) return done(err);
+            res.headers.ypresponse.should.equal('0');
+            res.headers.ypmessage.should.equal("SID does not exist. Check your firewall and icecast 'hostname' setting, your server may be unreachable.");
+            done();
+        });
+    });
+
+    after(function(done) {
+        var cleanDatabase= 'DELETE FROM server_mounts; DELETE FROM streams;';
+        query(cleanDatabase, function(err, rows) {
+            if(err) return done(err);
+            done();
         });
     });
 

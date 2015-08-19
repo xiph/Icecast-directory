@@ -6,15 +6,15 @@
 		},
 		"abuse":{
 			"reason": "Your server has been banned for abuse, have a nice day!",
-			"listenIps": ["92.246.30.112","222","333"]
+			"listenIps": ["92.246.30.112"]
 		},
 		"misconfigured":{
 			"reason": "The network range in which your server resides has been suspended due to a high number of wrongly configured servers! Please contact webmaster@xiph.org urgently!",
 			"listenUrls": ["hostingcenter.com"],
-			"listenIps": ["192.240.97.","192.240.102.","50.7.."]
+			"listenIps": ["192.240.97.","192.240.102.","50.7."]
 		},
 		"illegalListen2":{
-			"reason":"Whatever",
+			"reason":"Illegal listen_url. Incorrect <hostname> fails stream check and was blacklisted. Contact webmaster@icecast.org after correcting it on your side. 'listenurl' as shown in your admin interface MUST work!",
 			"listenUrls":["lazaradio.hu","ice.mwsc.tmt.de","host504.com","bristol.railroadradio.net","www.kolombiaestereo.com","radiowanderbuehne.org","live.raincitystream.com","roubaix.fr.shinsen-radio.com",
 						"lepesradio.hu","laradiohd.com","s-radio.whyza.net","213.240.254.147","radio.adrenalin.fm","99.93.26.131",
 						"delux-streams.eu","radio.status.ks.ua","campus.longmusic.com","stream1.getradio.ru",

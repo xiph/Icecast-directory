@@ -53,6 +53,7 @@ body { padding-bottom: 70px; }
   margin-left: auto;
   margin-right: auto;
   padding: 0 8px 0 8px;
+  border-collapse:separate !important;
 }
 
 #xiphbar a {

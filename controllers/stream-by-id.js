@@ -1,10 +1,9 @@
-var query, cache, log;
+var query, cache;
 
-function init(q, c, l) {
+function init(q, c) {
 
     query = q;
     cache = c;
-    log = l;
     return getCachedStreamById;
 }
 
