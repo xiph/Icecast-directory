@@ -85,7 +85,7 @@
 						<div class="panel-body">
 							<ul class="tag-cloud text-center">
 							{% for genre in stats.genres %}
-								<li class="popularity-{{genre.popularity}}"><a href="/search?={{genre.genre |url_encode}}" class="tag" title="{{genre.genre}} radios">{{genre.genre}}</a></li>
+								<li class="popularity-{{genre.popularity}}"><a href="/search?genre={{genre.genre |url_encode}}" class="tag" title="{{genre.genre}} radios">{{genre.genre}}</a></li>
 							{% endfor %}
 							</ul>
 						</div>
