@@ -33,7 +33,7 @@ function getListen(req, res) {
                 outputString += listenurls[i]+'\r\n';
             }
             res.set('Content-Type', 'audio/x-mpegurl');
-            if(userAgent.indexOf('/MSIE 5.5/') != -1)
+            if(userAgent && userAgent.indexOf('/MSIE 5.5/') != -1)
             {
                 res.set('Content-Disposition', 'inline; filename="listen.m3u"');
             }
