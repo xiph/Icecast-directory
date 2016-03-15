@@ -35,7 +35,7 @@ var search          = require('./controllers/search.js')(query, cache, streamsFi
 
 query.connectionParameters = config.db;
 
-swig.setDefaults({ cache: (process.env.NODE_ENV === 'production') ? true : false });
+swig.setDefaults({ cache: (process.env.NODE_ENV === 'production') ? 'memory' : false });
 
 /* Middlewares */
 app.use(morgan((process.env.NODE_ENV === 'production') ? 'short' : 'dev'));
