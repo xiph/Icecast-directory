@@ -1,45 +1,45 @@
 {
-	"bans": {
-		"illegalListen":{
-			"reason": "Not enough arguments",
-			"listenUrls": ["dev.local","testvm.hivane.net","backup.abidingradio.com"]
-		},
-		"abuse":{
-			"reason": "Your server has been banned for abuse, have a nice day!",
-			"listenIps": ["92.246.30.112"]
-		},
-		"misconfigured":{
-			"reason": "The network range in which your server resides has been suspended due to a high number of wrongly configured servers! Please contact webmaster@xiph.org urgently!",
-			"listenUrls": ["hostingcenter.com"],
-			"listenIps": ["192.240.97.","192.240.102.","50.7."]
-		},
-		"illegalListen2":{
-			"reason":"Illegal listen_url. Incorrect <hostname> fails stream check and was blacklisted. Contact webmaster@icecast.org after correcting it on your side. 'listenurl' as shown in your admin interface MUST work!",
-			"listenUrls":["lazaradio.hu","ice.mwsc.tmt.de","host504.com","bristol.railroadradio.net","www.kolombiaestereo.com","radiowanderbuehne.org","live.raincitystream.com","roubaix.fr.shinsen-radio.com",
-						"lepesradio.hu","laradiohd.com","s-radio.whyza.net","213.240.254.147","radio.adrenalin.fm","99.93.26.131",
-						"delux-streams.eu","radio.status.ks.ua","campus.longmusic.com","stream1.getradio.ru",
-						"servercristianonetwork.com","haiku.it.su.se","floodkik.no-ip.org","anytime-fm.i1234.me",
-						"108.46.109.251","laveteranacentro.com","prosoftnetwork.com","radioonce.mx","carter.sgc-univ.net",
-						"se-lkr2.stream.sevenbroadcasting.se","tv7n.com","ohmbrew.com","latinafm.com.ve","streamcenter.pro",
-						"radioutopia.ondametadona.net","www.sentimientosradio.com","magictodayradio.net","radiohd.com.ve",
-						"mfa05.mfa.go.th","www.radiompt.com.br","stream.pick-nik.ru","stream.ufostation.ru","salomefm.com",
-						"str0.zenon-media.com","livehost.com.br","radio.sfa.fathi.eu.org","belfast.fm","localhost.com","ix.clpw.ru",
-						"truecolorsradio.com","misionera.org.ve","thevibefmstlucia.net","www.radiounivo.com","66.135.42.116",
-						"laperladeltuy.com.ve","i-stereo.ru","topeslaradio.net","apollo21.cdnstream.com","educativa105.org",
-						"www.Meghedi.com","live.ultra-byte.ro","vps.ds106rad.io","streaming.rtz.rs","streaming.radioparacin.rs",
-						"netradiofm.com","195.24.224.77","vaststream.com","www.radio8.de","lafieraipiales.com","stream.martini-multimedia.net",
-						"sabambufm.com","midght-madness.is-a-rockstar.com","relay1.oxyradio.net","stream.ipv6.frequence3.net",
-						"janebarcelos.com.br","royal-host.net","live.radioanjangsanabogor.com","eclectica.mx","live.rtr.fm","player.morcegaofm.com.br",
-						"salyut.scenesat.com","nukmradio.com","osbleianos.com.br","radio2.promodeejay.net","stream1.letsgozik.org",
-						"tigerstream.k2d.com","novafmms.com.br","ondaradio.com.mx","mysuarafm.com","italodiscohits.com",
-						"reliastream.com","walsh.g-innova.com.ar","recitation.no-ip.org","services.lwbcast.org","305stream.com",
-						"www.clubkydz.com","marca.com","radioyan.com","radio.ya.dn.ua","radio.radiozlatousti.rs","radioprovinciafm.com",
-						"www.growradio.org","radiolatina.com.ar","radiocomunidadargentina.org","radiocfa.com.br","quibario.com",
-						"marketing.com.sv","larumbos.com","kdx.hobby-site.org","fmmonterrico.com","cooldradio.com",
-						"mai.com.es","manain.org","positiviemixcafe.com","7la.fm","live.unbandsoundz.org.uk","207.210.120.98",
-						"140.78.254.133","estudio100.com","frisby.com.co","217.144.56.128","ceomedia.cl",
-						"electronic-dream.com","radio.3rd.name","radiodurisima.com"]
-		}
-	}
-
+    "bans": {
+        "illegalListen":{
+            "reason": "Not enough arguments",
+            "listenUrls": ["dev.local","testvm.hivane.net","backup.abidingradio.com"]
+        },
+        "abuse":{
+            "reason": "Your server has been banned for abuse, have a nice day!",
+            "listenIps": ["92.246.30.112"]
+        },
+        "misconfigured":{
+            "reason": "The network range in which your server resides has been suspended due to a high number of wrongly configured servers! Please contact webmaster@xiph.org urgently!",
+            "listenUrls": ["hostingcenter.com"],
+            "listenIps": ["192.240.97.","192.240.102.","50.7."]
+        },
+        "illegalListen2":{
+            "reason":"Illegal listen_url. Incorrect <hostname> fails stream check and was blacklisted. Contact webmaster@icecast.org after correcting it on your side. 'listenurl' as shown in your admin interface MUST work!",
+            "listenUrls":["lazaradio.hu","ice.mwsc.tmt.de","host504.com","bristol.railroadradio.net","www.kolombiaestereo.com","radiowanderbuehne.org","live.raincitystream.com","roubaix.fr.shinsen-radio.com",
+                        "lepesradio.hu","laradiohd.com","s-radio.whyza.net","213.240.254.147","radio.adrenalin.fm","99.93.26.131",
+                        "delux-streams.eu","radio.status.ks.ua","campus.longmusic.com","stream1.getradio.ru",
+                        "servercristianonetwork.com","haiku.it.su.se","floodkik.no-ip.org","anytime-fm.i1234.me",
+                        "108.46.109.251","laveteranacentro.com","prosoftnetwork.com","radioonce.mx","carter.sgc-univ.net",
+                        "se-lkr2.stream.sevenbroadcasting.se","tv7n.com","ohmbrew.com","latinafm.com.ve","streamcenter.pro",
+                        "radioutopia.ondametadona.net","www.sentimientosradio.com","magictodayradio.net","radiohd.com.ve",
+                        "mfa05.mfa.go.th","www.radiompt.com.br","stream.pick-nik.ru","stream.ufostation.ru","salomefm.com",
+                        "str0.zenon-media.com","livehost.com.br","radio.sfa.fathi.eu.org","belfast.fm","localhost.com","ix.clpw.ru",
+                        "truecolorsradio.com","misionera.org.ve","thevibefmstlucia.net","www.radiounivo.com","66.135.42.116",
+                        "laperladeltuy.com.ve","i-stereo.ru","topeslaradio.net","apollo21.cdnstream.com","educativa105.org",
+                        "www.Meghedi.com","live.ultra-byte.ro","vps.ds106rad.io","streaming.rtz.rs","streaming.radioparacin.rs",
+                        "netradiofm.com","195.24.224.77","vaststream.com","www.radio8.de","lafieraipiales.com","stream.martini-multimedia.net",
+                        "sabambufm.com","midght-madness.is-a-rockstar.com","relay1.oxyradio.net","stream.ipv6.frequence3.net",
+                        "janebarcelos.com.br","royal-host.net","live.radioanjangsanabogor.com","eclectica.mx","live.rtr.fm","player.morcegaofm.com.br",
+                        "salyut.scenesat.com","nukmradio.com","osbleianos.com.br","radio2.promodeejay.net","stream1.letsgozik.org",
+                        "tigerstream.k2d.com","novafmms.com.br","ondaradio.com.mx","mysuarafm.com","italodiscohits.com",
+                        "reliastream.com","walsh.g-innova.com.ar","recitation.no-ip.org","services.lwbcast.org","305stream.com",
+                        "www.clubkydz.com","marca.com","radioyan.com","radio.ya.dn.ua","radio.radiozlatousti.rs","radioprovinciafm.com",
+                        "www.growradio.org","radiolatina.com.ar","radiocomunidadargentina.org","radiocfa.com.br","quibario.com",
+                        "marketing.com.sv","larumbos.com","kdx.hobby-site.org","fmmonterrico.com","cooldradio.com",
+                        "mai.com.es","manain.org","positiviemixcafe.com","7la.fm","live.unbandsoundz.org.uk","207.210.120.98",
+                        "140.78.254.133","estudio100.com","frisby.com.co","217.144.56.128","ceomedia.cl",
+                        "electronic-dream.com","radio.3rd.name","radiodurisima.com"]
+        }
+    },
+    "db" : "postgres://user:pass@localhost:5432/dbname"
 }
