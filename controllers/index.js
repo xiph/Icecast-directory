@@ -20,7 +20,7 @@ function index(req, res) {
     var json = 0;
     streamsFindBy(format, genre, q, order, limit, starting_after, ending_before, last_listener_count, json, function(err, rows) {
         if (err) {
-            res.send(503);
+            res.sendStatus(503);
         } else {
             var error;
             if (rows.length === 0) {
