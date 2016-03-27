@@ -4,37 +4,38 @@
   "version": "0.0.1",
   "private": true,
   "dependencies": {
-    "body-parser": "1.5.0",
-    "cache-manager": "0.14.0",
-    "express": "4.6.1",
-    "konphyg": "1.4.0",
-    "morgan": "1.1.1",
-    "pg": "3.4.0",
-    "pg-query": "0.10.1",
+    "apidoc": "*",
+    "async": "^2.0.0-rc.2",
+    "body-parser": "^1.5.0",
+    "bunyan": "*",
+    "cache-manager": "^0.14.0",
+    "express": "^4.6.1",
+    "konphyg": "^1.4.0",
+    "mocha": "*",
+    "morgan": "^1.1.1",
+    "pg": "^4.5.0",
+    "pg-query": "^0.10.1",
     "qs": "^2.3.3",
+    "request": "*",
+    "should": "*",
+    "supertest": "*",
     "swig": "1.4.2",
-    "validator":"*",
-    "xmlbuilder":"*",
-    "apidoc":"*",
-    "mocha":"*",
-    "should":"*",
-    "supertest":"*",
-    "request":"*",
-    "bunyan":"*"
+    "validator": "*",
+    "xmlbuilder": "*"
   },
   "apidoc": {
     "name": "Icecast Stream Directory API",
     "version": "0.0.0",
     "description": "Stream directory api",
     "title": "Icecast Stream Directory API",
-    "url" : "",
+    "url": "",
     "order": [
-        "Streams",
-        "Genres",
-        "Formats"
+      "Streams",
+      "Genres",
+      "Formats"
     ]
   },
-  "scripts":{
-    "test":"mocha"
+  "scripts": {
+    "test": "mocha"
   }
 }
